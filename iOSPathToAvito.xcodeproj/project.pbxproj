@@ -11,10 +11,17 @@
 		C17620B62BC7D6BC00CFC0B1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17620B52BC7D6BC00CFC0B1 /* SceneDelegate.swift */; };
 		C17620BD2BC7D6C200CFC0B1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C17620BC2BC7D6C200CFC0B1 /* Assets.xcassets */; };
 		C17620C02BC7D6C200CFC0B1 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = C17620BF2BC7D6C200CFC0B1 /* Base */; };
-		C17620CA2BC7D86900CFC0B1 /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17620C92BC7D86900CFC0B1 /* MainTabBarController.swift */; };
-		C17620CE2BC7D91A00CFC0B1 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17620CD2BC7D91A00CFC0B1 /* HomeViewController.swift */; };
-		C17620D02BC7D92400CFC0B1 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17620CF2BC7D92400CFC0B1 /* DetailViewController.swift */; };
-		C17620D22BC7DFF500CFC0B1 /* ModuleFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17620D12BC7DFF500CFC0B1 /* ModuleFactory.swift */; };
+		C17654BB2BD3873900EEEF12 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17654BA2BD3873900EEEF12 /* Coordinator.swift */; };
+		C17654C22BD3882100EEEF12 /* FavoritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17654C12BD3882100EEEF12 /* FavoritesViewController.swift */; };
+		C17654C42BD3882E00EEEF12 /* ProductListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17654C32BD3882E00EEEF12 /* ProductListViewController.swift */; };
+		C17654C62BD3883900EEEF12 /* BucketListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17654C52BD3883900EEEF12 /* BucketListViewController.swift */; };
+		C17654CE2BD38F4C00EEEF12 /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17654CD2BD38F4C00EEEF12 /* AppCoordinator.swift */; };
+		C17654D42BD3A1D400EEEF12 /* TabBarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17654D32BD3A1D400EEEF12 /* TabBarCoordinator.swift */; };
+		C17654D62BD3AA4200EEEF12 /* TabBarPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17654D52BD3AA4200EEEF12 /* TabBarPage.swift */; };
+		C17654D82BD3B05A00EEEF12 /* BucketListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17654D72BD3B05A00EEEF12 /* BucketListPresenter.swift */; };
+		C17654DA2BD3B07200EEEF12 /* BucketListInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17654D92BD3B07200EEEF12 /* BucketListInteractor.swift */; };
+		C17654DC2BD3B0AC00EEEF12 /* BucketListCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17654DB2BD3B0AC00EEEF12 /* BucketListCoordinator.swift */; };
+		C17654DE2BD3B4C000EEEF12 /* ModuleFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17654DD2BD3B4C000EEEF12 /* ModuleFactory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,10 +31,17 @@
 		C17620BC2BC7D6C200CFC0B1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C17620BF2BC7D6C200CFC0B1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C17620C12BC7D6C200CFC0B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C17620C92BC7D86900CFC0B1 /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
-		C17620CD2BC7D91A00CFC0B1 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		C17620CF2BC7D92400CFC0B1 /* DetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
-		C17620D12BC7DFF500CFC0B1 /* ModuleFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleFactory.swift; sourceTree = "<group>"; };
+		C17654BA2BD3873900EEEF12 /* Coordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		C17654C12BD3882100EEEF12 /* FavoritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewController.swift; sourceTree = "<group>"; };
+		C17654C32BD3882E00EEEF12 /* ProductListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListViewController.swift; sourceTree = "<group>"; };
+		C17654C52BD3883900EEEF12 /* BucketListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BucketListViewController.swift; sourceTree = "<group>"; };
+		C17654CD2BD38F4C00EEEF12 /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
+		C17654D32BD3A1D400EEEF12 /* TabBarCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarCoordinator.swift; sourceTree = "<group>"; };
+		C17654D52BD3AA4200EEEF12 /* TabBarPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarPage.swift; sourceTree = "<group>"; };
+		C17654D72BD3B05A00EEEF12 /* BucketListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BucketListPresenter.swift; sourceTree = "<group>"; };
+		C17654D92BD3B07200EEEF12 /* BucketListInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BucketListInteractor.swift; sourceTree = "<group>"; };
+		C17654DB2BD3B0AC00EEEF12 /* BucketListCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BucketListCoordinator.swift; sourceTree = "<group>"; };
+		C17654DD2BD3B4C000EEEF12 /* ModuleFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleFactory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +76,7 @@
 			children = (
 				C17620B32BC7D6BC00CFC0B1 /* AppDelegate.swift */,
 				C17620B52BC7D6BC00CFC0B1 /* SceneDelegate.swift */,
+				C17654B62BD386E800EEEF12 /* Coordinator */,
 				C17620C72BC7D80E00CFC0B1 /* Modules */,
 				C17620BC2BC7D6C200CFC0B1 /* Assets.xcassets */,
 				C17620BE2BC7D6C200CFC0B1 /* LaunchScreen.storyboard */,
@@ -73,36 +88,50 @@
 		C17620C72BC7D80E00CFC0B1 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				C17620CC2BC7D90C00CFC0B1 /* Detail */,
-				C17620CB2BC7D90500CFC0B1 /* Home */,
-				C17620C82BC7D85B00CFC0B1 /* Main */,
+				C17654DD2BD3B4C000EEEF12 /* ModuleFactory.swift */,
+				C17654C02BD387FB00EEEF12 /* BucketList */,
+				C17654BF2BD387D200EEEF12 /* ProductList */,
+				C17654BE2BD387C900EEEF12 /* Favorites */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
 		};
-		C17620C82BC7D85B00CFC0B1 /* Main */ = {
+		C17654B62BD386E800EEEF12 /* Coordinator */ = {
 			isa = PBXGroup;
 			children = (
-				C17620C92BC7D86900CFC0B1 /* MainTabBarController.swift */,
-				C17620D12BC7DFF500CFC0B1 /* ModuleFactory.swift */,
+				C17654BA2BD3873900EEEF12 /* Coordinator.swift */,
+				C17654CD2BD38F4C00EEEF12 /* AppCoordinator.swift */,
+				C17654D32BD3A1D400EEEF12 /* TabBarCoordinator.swift */,
+				C17654D52BD3AA4200EEEF12 /* TabBarPage.swift */,
 			);
-			path = Main;
+			path = Coordinator;
 			sourceTree = "<group>";
 		};
-		C17620CB2BC7D90500CFC0B1 /* Home */ = {
+		C17654BE2BD387C900EEEF12 /* Favorites */ = {
 			isa = PBXGroup;
 			children = (
-				C17620CD2BC7D91A00CFC0B1 /* HomeViewController.swift */,
+				C17654C12BD3882100EEEF12 /* FavoritesViewController.swift */,
 			);
-			path = Home;
+			path = Favorites;
 			sourceTree = "<group>";
 		};
-		C17620CC2BC7D90C00CFC0B1 /* Detail */ = {
+		C17654BF2BD387D200EEEF12 /* ProductList */ = {
 			isa = PBXGroup;
 			children = (
-				C17620CF2BC7D92400CFC0B1 /* DetailViewController.swift */,
+				C17654C32BD3882E00EEEF12 /* ProductListViewController.swift */,
 			);
-			path = Detail;
+			path = ProductList;
+			sourceTree = "<group>";
+		};
+		C17654C02BD387FB00EEEF12 /* BucketList */ = {
+			isa = PBXGroup;
+			children = (
+				C17654C52BD3883900EEEF12 /* BucketListViewController.swift */,
+				C17654D72BD3B05A00EEEF12 /* BucketListPresenter.swift */,
+				C17654D92BD3B07200EEEF12 /* BucketListInteractor.swift */,
+				C17654DB2BD3B0AC00EEEF12 /* BucketListCoordinator.swift */,
+			);
+			path = BucketList;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -175,12 +204,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C17654BB2BD3873900EEEF12 /* Coordinator.swift in Sources */,
 				C17620B42BC7D6BC00CFC0B1 /* AppDelegate.swift in Sources */,
-				C17620CA2BC7D86900CFC0B1 /* MainTabBarController.swift in Sources */,
-				C17620D02BC7D92400CFC0B1 /* DetailViewController.swift in Sources */,
+				C17654DA2BD3B07200EEEF12 /* BucketListInteractor.swift in Sources */,
 				C17620B62BC7D6BC00CFC0B1 /* SceneDelegate.swift in Sources */,
-				C17620D22BC7DFF500CFC0B1 /* ModuleFactory.swift in Sources */,
-				C17620CE2BC7D91A00CFC0B1 /* HomeViewController.swift in Sources */,
+				C17654C22BD3882100EEEF12 /* FavoritesViewController.swift in Sources */,
+				C17654CE2BD38F4C00EEEF12 /* AppCoordinator.swift in Sources */,
+				C17654C42BD3882E00EEEF12 /* ProductListViewController.swift in Sources */,
+				C17654D62BD3AA4200EEEF12 /* TabBarPage.swift in Sources */,
+				C17654DC2BD3B0AC00EEEF12 /* BucketListCoordinator.swift in Sources */,
+				C17654D42BD3A1D400EEEF12 /* TabBarCoordinator.swift in Sources */,
+				C17654D82BD3B05A00EEEF12 /* BucketListPresenter.swift in Sources */,
+				C17654DE2BD3B4C000EEEF12 /* ModuleFactory.swift in Sources */,
+				C17654C62BD3883900EEEF12 /* BucketListViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
