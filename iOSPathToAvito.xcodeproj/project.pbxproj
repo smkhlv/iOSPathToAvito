@@ -41,7 +41,6 @@
 		C176550C2BDA7AA900EEEF12 /* ProductCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C176550B2BDA7AA900EEEF12 /* ProductCell.swift */; };
 		C176550E2BDADFEA00EEEF12 /* ProductDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C176550D2BDADFEA00EEEF12 /* ProductDetailViewController.swift */; };
 		C17655102BDADFF700EEEF12 /* ProductDetailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C176550F2BDADFF700EEEF12 /* ProductDetailPresenter.swift */; };
-		C17655122BDAE00500EEEF12 /* ProductDetailInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17655112BDAE00500EEEF12 /* ProductDetailInteractor.swift */; };
 		C17655142BDAE02F00EEEF12 /* ProductDetailTableHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17655132BDAE02F00EEEF12 /* ProductDetailTableHandler.swift */; };
 		C18B8F832BDD1DF600A15085 /* StateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18B8F822BDD1DF600A15085 /* StateButton.swift */; };
 		C18B8F892BDD62D800A15085 /* ProductCellDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = C18B8F882BDD62D800A15085 /* ProductCellDetail.swift */; };
@@ -85,7 +84,6 @@
 		C176550B2BDA7AA900EEEF12 /* ProductCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCell.swift; sourceTree = "<group>"; };
 		C176550D2BDADFEA00EEEF12 /* ProductDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailViewController.swift; sourceTree = "<group>"; };
 		C176550F2BDADFF700EEEF12 /* ProductDetailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailPresenter.swift; sourceTree = "<group>"; };
-		C17655112BDAE00500EEEF12 /* ProductDetailInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailInteractor.swift; sourceTree = "<group>"; };
 		C17655132BDAE02F00EEEF12 /* ProductDetailTableHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailTableHandler.swift; sourceTree = "<group>"; };
 		C18B8F822BDD1DF600A15085 /* StateButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateButton.swift; sourceTree = "<group>"; };
 		C18B8F882BDD62D800A15085 /* ProductCellDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCellDetail.swift; sourceTree = "<group>"; };
@@ -239,7 +237,6 @@
 			children = (
 				C176550D2BDADFEA00EEEF12 /* ProductDetailViewController.swift */,
 				C176550F2BDADFF700EEEF12 /* ProductDetailPresenter.swift */,
-				C17655112BDAE00500EEEF12 /* ProductDetailInteractor.swift */,
 				C17655132BDAE02F00EEEF12 /* ProductDetailTableHandler.swift */,
 			);
 			path = ProductDetail;
@@ -329,7 +326,6 @@
 				C17654BB2BD3873900EEEF12 /* Coordinator.swift in Sources */,
 				C17620B42BC7D6BC00CFC0B1 /* AppDelegate.swift in Sources */,
 				C17654E42BD8FE6100EEEF12 /* Product.swift in Sources */,
-				C17655122BDAE00500EEEF12 /* ProductDetailInteractor.swift in Sources */,
 				C17654DA2BD3B07200EEEF12 /* BucketListInteractor.swift in Sources */,
 				C17620B62BC7D6BC00CFC0B1 /* SceneDelegate.swift in Sources */,
 				C17654F82BD9871700EEEF12 /* ProductListPresenter.swift in Sources */,
