@@ -1,21 +1,18 @@
 import UIKit
 
-public protocol ProductListViewControllerProtocol: AnyObject {
-    
-    func updateProductListTable(products: [UUID: Product])
-}
+public protocol ProductDetailViewControllerProtocol: AnyObject { }
 
-public final class ProductListViewController: UIViewController, 
-                                                ProductListViewControllerProtocol {
+public final class ProductDetailViewController: UIViewController,
+                                                ProductDetailViewControllerProtocol {
     
-    private let presenter: ProductListPresenterProtocol
+    private let presenter: ProductDetailPresenterProtocol
     
     private weak var tableView: UITableView?
     
-    private var tableHandler: ProductListTableHandler
+    private var tableHandler: ProductDetailTableHandler
     
-    init(presenter: ProductListPresenterProtocol,
-         tableHandler: ProductListTableHandler) {
+    init(presenter: ProductDetailPresenterProtocol,
+         tableHandler: ProductDetailTableHandler) {
         self.presenter = presenter
         self.tableHandler = tableHandler
         
@@ -32,24 +29,13 @@ public final class ProductListViewController: UIViewController,
         setupTable()
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        presenter.fetchProducts()
-    }
-    
-    public func updateProductListTable(products: [UUID: Product]) {
-        tableHandler.products = products
-        tableView?.reloadData()
-    }
-    
     private func setupTable() {
         
         let table = UITableView()
         tableView = table
         table.dataSource = tableHandler
-        table.delegate = tableHandler
-        table.register(ProductCell.self,
-                       forCellReuseIdentifier: String(describing: ProductCell.self))
+        table.register(ProductCellDetail.self,
+                       forCellReuseIdentifier: String(describing: ProductCellDetail.self))
         
         view.addSubview(table)
         

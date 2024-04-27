@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-protocol BucketListInteractorInput: AnyObject {
+protocol FavoritesInteractorInput: AnyObject {
     // fetching some data
     
     func updateProductList()
@@ -11,7 +11,7 @@ protocol BucketListInteractorInput: AnyObject {
     func chageOfProductFavoriteState(id: UUID?)
 }
 
-protocol BucketListInteractorOutput: AnyObject {
+protocol FavoritesInteractorOutput: AnyObject {
     // result of fetching
     
     func productFetchingError(title: String)
@@ -19,13 +19,9 @@ protocol BucketListInteractorOutput: AnyObject {
     func products(list: [UUID: Product])
 }
 
-public enum BucketListInteractorError: Error {
-    case noData
-}
-
-final class BucketListInteractor: BucketListInteractorInput {
+final class FavoritesInteractor: FavoritesInteractorInput {
     
-    public weak var output: BucketListInteractorOutput?
+    public weak var output: FavoritesInteractorOutput?
     private let loader: LoaderProtocol
     private let dataStore: DataStoreProtocol
     
@@ -55,7 +51,7 @@ final class BucketListInteractor: BucketListInteractorInput {
     }
     
     func updateProductList() {
-        let products = dataStore.getProducts().filter { $0.value.isBucketInside }
+        let products = dataStore.getProducts().filter { $0.value.isFavorite }
         output?.products(list: products)
     }
 }

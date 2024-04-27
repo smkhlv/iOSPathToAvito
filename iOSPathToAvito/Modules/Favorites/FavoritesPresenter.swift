@@ -1,18 +1,18 @@
 import Foundation
 
-protocol BucketListPresenterProtocol: AnyObject {
+protocol FavoritesPresenterProtocol: AnyObject {
     func updateProductList()
 }
 
-final class BucketListPresenter: BucketListPresenterProtocol {
+final class FavoritesPresenter: FavoritesPresenterProtocol {
     
-    public weak var view: BucketListViewControllerProtocol?
-    private let coordinator: BucketListCoordinatorProtocol
-    private let interactor: BucketListInteractorInput
+    public weak var view: FavoritesViewControllerProtocol?
+    private let coordinator: FavoritesCoordinatorProtocol
+    private let interactor: FavoritesInteractorInput
     
     init(
-        coordinator: BucketListCoordinatorProtocol,
-        interactor: BucketListInteractorInput
+        coordinator: FavoritesCoordinatorProtocol,
+        interactor: FavoritesInteractorInput
     ) {
         self.coordinator = coordinator
         self.interactor = interactor
@@ -23,7 +23,7 @@ final class BucketListPresenter: BucketListPresenterProtocol {
     }
 }
 
-extension BucketListPresenter: BucketListInteractorOutput {
+extension FavoritesPresenter: FavoritesInteractorOutput {
     func productFetchingError(title: String) {
         print(title)
     }
@@ -33,7 +33,8 @@ extension BucketListPresenter: BucketListInteractorOutput {
     }
 }
 
-extension BucketListPresenter: ProductCellDelegate {
+extension FavoritesPresenter: ProductCellDelegate {
+    
     func showDetail(product: Product) {
         coordinator.showDetail(product: product)
     }

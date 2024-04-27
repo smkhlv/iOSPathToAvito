@@ -1,17 +1,17 @@
 import UIKit
 
-protocol BucketListCoordinatorProtocol: AnyObject {
+protocol ProductListCoordinatorProtocol: AnyObject {
     func showDetail(product: Product)
 }
 
-final class BucketListCoordinator: BucketListCoordinatorProtocol, Coordinator {
+final class ProductListCoordinator: ProductListCoordinatorProtocol, Coordinator {
     weak var finishDelegate: CoordinatorFinishDelegate?
     
     var navigationController: UINavigationController
     
     var childCoordinators: [Coordinator] = []
     
-    var type: CoordinatorType { .bucket }
+    var type: CoordinatorType { .productList }
     
     func start(view: UIViewController? = nil) {
         guard let view = view else { return }
@@ -28,6 +28,6 @@ final class BucketListCoordinator: BucketListCoordinatorProtocol, Coordinator {
     }
 }
 
-extension BucketListCoordinator: CoordinatorFinishDelegate {
+extension ProductListCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) { }
 }

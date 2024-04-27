@@ -1,31 +1,31 @@
 import Foundation
 
-protocol BucketListPresenterProtocol: AnyObject {
-    func updateProductList()
+protocol ProductListPresenterProtocol: AnyObject {
+    func fetchProducts()
 }
 
-final class BucketListPresenter: BucketListPresenterProtocol {
+final class ProductListPresenter: ProductListPresenterProtocol {
     
-    public weak var view: BucketListViewControllerProtocol?
-    private let coordinator: BucketListCoordinatorProtocol
-    private let interactor: BucketListInteractorInput
+    public weak var view: ProductListViewControllerProtocol?
+    private let coordinator: ProductListCoordinatorProtocol
+    private let interactor: ProductListInteractorInput
     
     init(
-        coordinator: BucketListCoordinatorProtocol,
-        interactor: BucketListInteractorInput
+        coordinator: ProductListCoordinatorProtocol,
+        interactor: ProductListInteractorInput
     ) {
         self.coordinator = coordinator
         self.interactor = interactor
     }
     
-    func updateProductList() {
-        interactor.updateProductList()
+    func fetchProducts() {
+        interactor.fetchProducts()
     }
 }
 
-extension BucketListPresenter: BucketListInteractorOutput {
+extension ProductListPresenter: ProductListInteractorOutput {
     func productFetchingError(title: String) {
-        print(title)
+        debugPrint(title)
     }
     
     func products(list: [UUID: Product]) {
@@ -33,11 +33,10 @@ extension BucketListPresenter: BucketListInteractorOutput {
     }
 }
 
-extension BucketListPresenter: ProductCellDelegate {
+extension ProductListPresenter: ProductCellDelegate {
     func showDetail(product: Product) {
         coordinator.showDetail(product: product)
     }
-    
     func toFavoritesWasClicked(productId: UUID?) {
         interactor.chageOfProductFavoriteState(id: productId)
     }

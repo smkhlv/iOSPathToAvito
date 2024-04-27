@@ -1,14 +1,23 @@
 import UIKit
 
-public protocol BucketListViewControllerProtocol: AnyObject { }
+public protocol BucketListViewControllerProtocol: AnyObject {
+    
+    func updateProductListTable(products: [UUID: Product])
+}
 
 public final class BucketListViewController: UIViewController,
                                              BucketListViewControllerProtocol {
     
     private let presenter: BucketListPresenterProtocol
     
-    init(presenter: BucketListPresenterProtocol) {
+    private weak var tableView: UITableView?
+    
+    private var tableHandler: ProductListTableHandler
+    
+    init(presenter: BucketListPresenterProtocol,
+         tableHandler: ProductListTableHandler) {
         self.presenter = presenter
+        self.tableHandler = tableHandler
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -20,8 +29,36 @@ public final class BucketListViewController: UIViewController,
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .blue
+        setupTable()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        presenter.updateProductList()
+    }
+    
+    public func updateProductListTable(products: [UUID: Product]) {
+        tableHandler.products = products
+        tableView?.reloadData()
+    }
+    
+    private func setupTable() {
         
-        presenter.viewDidLoad(view: self)
+        let table = UITableView()
+        tableView = table
+        table.dataSource = tableHandler
+        table.delegate = tableHandler
+        table.register(ProductCell.self,
+                       forCellReuseIdentifier: String(describing: ProductCell.self))
+        
+        view.addSubview(table)
+        
+        table.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            table.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            table.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            table.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
+            table.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor)
+        ])
     }
 }

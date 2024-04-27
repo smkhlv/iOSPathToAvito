@@ -40,5 +40,5 @@ protocol CoordinatorFinishDelegate: AnyObject {
 
 /// Using this structure we can define what type of flow we can use in-app.
 enum CoordinatorType {
-    case app, tab, bucket
+    case app, tab, bucket, favorites, productList
 }
