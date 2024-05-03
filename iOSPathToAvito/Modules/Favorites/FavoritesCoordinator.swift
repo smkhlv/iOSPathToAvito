@@ -1,7 +1,7 @@
 import UIKit
 
 protocol FavoritesCoordinatorProtocol: AnyObject {
-    func showDetail(product: Product)
+    func showDetail(product: Product, subject: SubjectInteractorProtocol?)
 }
 
 final class FavoritesCoordinator: FavoritesCoordinatorProtocol, Coordinator {
@@ -18,8 +18,9 @@ final class FavoritesCoordinator: FavoritesCoordinatorProtocol, Coordinator {
         navigationController.pushViewController(view, animated: true)
     }
     
-    func showDetail(product: Product) {
-        let detail = ModuleFactory.buildProductDetail(product: product)
+    func showDetail(product: Product, subject: SubjectInteractorProtocol?) {
+        let detail = ModuleFactory.buildProductDetail(product: product,
+                                                      subject: subject)
         navigationController.pushViewController(detail, animated: true)
     }
     

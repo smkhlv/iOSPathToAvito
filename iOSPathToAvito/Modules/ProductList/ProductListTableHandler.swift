@@ -23,8 +23,7 @@ extension ProductListTableHandler: UITableViewDataSource {
         let imageOfBucket = product.value.isBucketInside ? UIImage(systemName: "cart.fill") : UIImage(systemName: "cart")
         
         cell.configureCell(delegate: delegate,
-                           id: product.value.id,
-                           title: product.value.title,
+                           product: product.value,
                            imageOfFavorite: imageOfFavorite,
                            imageOfBucket: imageOfBucket)
         

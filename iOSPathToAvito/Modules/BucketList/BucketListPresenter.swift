@@ -1,8 +1,6 @@
 import Foundation
 
-protocol BucketListPresenterProtocol: AnyObject {
-    func updateProductList()
-}
+protocol BucketListPresenterProtocol: AnyObject { }
 
 final class BucketListPresenter: BucketListPresenterProtocol {
     
@@ -16,10 +14,6 @@ final class BucketListPresenter: BucketListPresenterProtocol {
     ) {
         self.coordinator = coordinator
         self.interactor = interactor
-    }
-    
-    func updateProductList() {
-        interactor.updateProductList()
     }
 }
 
@@ -35,14 +29,10 @@ extension BucketListPresenter: BucketListInteractorOutput {
 
 extension BucketListPresenter: ProductCellDelegate {
     func showDetail(product: Product) {
-        coordinator.showDetail(product: product)
+        coordinator.showDetail(product: product, subject: interactor.subjectObject())
     }
     
-    func toFavoritesWasClicked(productId: UUID?) {
-        interactor.chageOfProductFavoriteState(id: productId)
-    }
-    
-    func toBucketWasClicked(productId: UUID?) {
-        interactor.changeOfProductBucketState(id: productId)
+    func change(product: [UUID: Product]) {
+        interactor.change(product: product)
     }
 }

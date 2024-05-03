@@ -32,11 +32,6 @@ public final class FavoritesViewController: UIViewController,
         setupTable()
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        presenter.updateProductList()
-    }
-    
     public func updateProductListTable(products: [UUID: Product]) {
         tableHandler.products = products
         tableView?.reloadData()

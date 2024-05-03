@@ -1,10 +1,8 @@
 import UIKit
 
 public protocol ProductCellDelegate: AnyObject {
-    
-    func toFavoritesWasClicked(productId: UUID?)
-    
-    func toBucketWasClicked(productId: UUID?)
+
+    func change(product: [UUID: Product])
     
     func showDetail(product: Product)
 }
@@ -20,7 +18,7 @@ public class ProductCell: UITableViewCell {
     private var stateOfFavorite: StateButton = .unpressed
     private var stateOfBucket: StateButton = .unpressed
     
-    private var productId: UUID?
+    private var product: Product?
     
     private lazy var toBucketButton: UIButton = {
         let button = UIButton(type: .system)
@@ -46,13 +44,12 @@ public class ProductCell: UITableViewCell {
     }()
     
     public func configureCell(delegate: ProductCellDelegate?, 
-                              id: UUID,
-                              title: String,
+                              product: Product,
                               imageOfFavorite: UIImage?,
                               imageOfBucket: UIImage?) {
         self.delegate = delegate
-        self.productId = id
-        self.titleLabel.text = title
+        self.product = product
+        self.titleLabel.text = product.title
         
         toFavoritesButton.setImage(imageOfFavorite, for: .normal)
         toBucketButton.setImage(imageOfBucket, for: .normal)
@@ -101,13 +98,23 @@ public class ProductCell: UITableViewCell {
         let image = stateOfFavorite == .unpressed ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart")
         toFavoritesButton.setImage(image, for: .normal)
         stateOfFavorite = stateOfFavorite == .unpressed ? .pressed : .unpressed
-        delegate?.toFavoritesWasClicked(productId: productId)
+        
+        if let product = product,
+        let id = product.id {
+            product.isFavorite = !product.isFavorite
+            delegate?.change(product: [id: product])
+        }
     }
     
     @objc private func toBucketWasClicked() {
         let image = stateOfBucket == .unpressed ? UIImage(systemName: "cart.fill") : UIImage(systemName: "cart")
         toBucketButton.setImage(image, for: .normal)
         stateOfBucket = stateOfBucket == .unpressed ? .pressed : .unpressed
-        delegate?.toBucketWasClicked(productId: productId)
+        
+        if let product = product,
+        let id = product.id {
+            product.isBucketInside = !product.isBucketInside
+            delegate?.change(product: [id: product])
+        }
     }
 }

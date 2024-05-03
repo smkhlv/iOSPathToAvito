@@ -19,7 +19,7 @@ final class ProductListPresenter: ProductListPresenterProtocol {
     }
     
     func fetchProducts() {
-        interactor.fetchProducts()
+        interactor.setupProducts()
     }
 }
 
@@ -35,13 +35,10 @@ extension ProductListPresenter: ProductListInteractorOutput {
 
 extension ProductListPresenter: ProductCellDelegate {
     func showDetail(product: Product) {
-        coordinator.showDetail(product: product)
-    }
-    func toFavoritesWasClicked(productId: UUID?) {
-        interactor.chageOfProductFavoriteState(id: productId)
+        coordinator.showDetail(product: product, subject: interactor.subjectObject())
     }
     
-    func toBucketWasClicked(productId: UUID?) {
-        interactor.changeOfProductBucketState(id: productId)
+    func change(product: [UUID: Product]) {
+        interactor.change(product: product)
     }
 }

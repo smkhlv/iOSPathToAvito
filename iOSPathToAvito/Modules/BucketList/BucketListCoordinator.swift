@@ -1,7 +1,7 @@
 import UIKit
 
 protocol BucketListCoordinatorProtocol: AnyObject {
-    func showDetail(product: Product)
+    func showDetail(product: Product, subject: SubjectInteractorProtocol?)
 }
 
 final class BucketListCoordinator: BucketListCoordinatorProtocol, Coordinator {
@@ -18,8 +18,9 @@ final class BucketListCoordinator: BucketListCoordinatorProtocol, Coordinator {
         navigationController.pushViewController(view, animated: true)
     }
     
-    func showDetail(product: Product) {
-        let detail = ModuleFactory.buildProductDetail(product: product)
+    func showDetail(product: Product, subject: SubjectInteractorProtocol?) {
+        let detail = ModuleFactory.buildProductDetail(product: product,
+                                                      subject: subject)
         navigationController.pushViewController(detail, animated: true)
     }
     

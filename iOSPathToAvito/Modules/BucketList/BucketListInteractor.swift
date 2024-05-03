@@ -2,60 +2,51 @@ import Foundation
 import UIKit
 
 protocol BucketListInteractorInput: AnyObject {
-    // fetching some data
+    func change(product: [UUID: Product])
     
-    func updateProductList()
-    
-    func changeOfProductBucketState(id: UUID?)
-    
-    func chageOfProductFavoriteState(id: UUID?)
+    func subjectObject() -> SubjectInteractorProtocol?
 }
 
 protocol BucketListInteractorOutput: AnyObject {
-    // result of fetching
-    
     func productFetchingError(title: String)
     
     func products(list: [UUID: Product])
 }
 
-public enum BucketListInteractorError: Error {
-    case noData
+final class BucketListInteractor: BucketListInteractorInput, ObserverInteractor {    
+    var id: String = UUID().uuidString
+    
+    var products: [UUID : Product] = [:]
+    
+    public weak var output: ObserverInteractorOutput?
+    public weak var outputToPresenter: BucketListInteractorOutput?
+    private let loader: LoaderProtocol
+    private let dataManager: DS
+    public var subject: SubjectInteractorProtocol?
+    
+    func subjectObject() -> SubjectInteractorProtocol? {
+        return subject
+    }
+    
+    init(loader: LoaderProtocol, dataManager: DS) {
+        self.loader = loader
+        self.dataManager = dataManager
+    }
+    
+    public func change(product: [UUID: Product]) {
+        if let product = product.first {
+            products[product.key] = product.value
+            subject?.updateProduct(product.value)
+        }
+    }
 }
 
-final class BucketListInteractor: BucketListInteractorInput {
-    
-    public weak var output: BucketListInteractorOutput?
-    private let loader: LoaderProtocol
-    private let dataStore: DataStoreProtocol
-    
-    init(loader: LoaderProtocol, dataStore: DataStoreProtocol) {
-        self.loader = loader
-        self.dataStore = dataStore
-    }
-    
-    func changeOfProductBucketState(id: UUID?) {
-        guard let id = id else {
-            return
+extension BucketListInteractor: ObserverInteractorOutput {
+    func update(list: [UUID : Product]) {
+        if let product = list.first {
+            products[product.key] = product.value
+            products = products.filter { $0.value.isBucketInside }
         }
-        let products = dataStore.getProducts()
-        let productToChange = products[id]
-        productToChange?.isBucketInside = productToChange?.isBucketInside == true ? false : true
-        output?.products(list: products)
-    }
-    
-    func chageOfProductFavoriteState(id: UUID?) {
-        guard let id = id else {
-            return
-        }
-        let products = dataStore.getProducts()
-        let productToChange = products[id]
-        productToChange?.isFavorite = productToChange?.isFavorite == true ? false : true
-        output?.products(list: products)
-    }
-    
-    func updateProductList() {
-        let products = dataStore.getProducts().filter { $0.value.isBucketInside }
-        output?.products(list: products)
+        outputToPresenter?.products(list: products)
     }
 }

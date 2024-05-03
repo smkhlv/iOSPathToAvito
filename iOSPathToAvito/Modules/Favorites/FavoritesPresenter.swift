@@ -1,8 +1,6 @@
 import Foundation
 
-protocol FavoritesPresenterProtocol: AnyObject {
-    func updateProductList()
-}
+protocol FavoritesPresenterProtocol: AnyObject { }
 
 final class FavoritesPresenter: FavoritesPresenterProtocol {
     
@@ -17,10 +15,6 @@ final class FavoritesPresenter: FavoritesPresenterProtocol {
         self.coordinator = coordinator
         self.interactor = interactor
     }
-    
-    func updateProductList() {
-        interactor.updateProductList()
-    }
 }
 
 extension FavoritesPresenter: FavoritesInteractorOutput {
@@ -28,7 +22,7 @@ extension FavoritesPresenter: FavoritesInteractorOutput {
         print(title)
     }
     
-    func products(list: [UUID: Product]) {
+    func products(list: [UUID : Product]) {
         view?.updateProductListTable(products: list)
     }
 }
@@ -36,14 +30,10 @@ extension FavoritesPresenter: FavoritesInteractorOutput {
 extension FavoritesPresenter: ProductCellDelegate {
     
     func showDetail(product: Product) {
-        coordinator.showDetail(product: product)
+        coordinator.showDetail(product: product, subject: interactor.subjectObject())
     }
     
-    func toFavoritesWasClicked(productId: UUID?) {
-        interactor.chageOfProductFavoriteState(id: productId)
-    }
-    
-    func toBucketWasClicked(productId: UUID?) {
-        interactor.changeOfProductBucketState(id: productId)
+    func change(product: [UUID: Product]) {
+        interactor.change(product: product)
     }
 }

@@ -1,34 +1,32 @@
 import UIKit
+import CoreData
 
-public class Product {
-    let id: UUID
-    let shopId: UUID?
+public class Product: NSManagedObject {
+    @NSManaged var id: UUID?
+    @NSManaged var shopId: UUID?
     
-    let title: String
-    let description: String
-    let price: String
-    let images: [UIImage]
+    @NSManaged var title: String?
+    @NSManaged var productDescription: String?
+    @NSManaged var price: String?
     
-    var isFavorite: Bool
-    var isBucketInside: Bool
+    @NSManaged private var _isFavorite: NSNumber?
+    @NSManaged private var _isBucketInside: NSNumber?
     
-    init(
-        id: UUID,
-        shopId: UUID?,
-        title: String,
-        description: String,
-        price: String,
-        images: [UIImage],
-        isFavorite: Bool = false,
-        isBucketInside: Bool = false
-    ) {
-        self.id = id
-        self.shopId = shopId
-        self.title = title
-        self.description = description
-        self.price = price
-        self.images = images
-        self.isFavorite = isFavorite
-        self.isBucketInside = isBucketInside
+    public var isFavorite: Bool {
+        get {
+            return _isFavorite?.boolValue ?? false
+        }
+        set {
+            _isFavorite = NSNumber(booleanLiteral: newValue)
+        }
+    }
+    
+    public var isBucketInside: Bool {
+        get {
+            return _isBucketInside?.boolValue ?? false
+        }
+        set {
+            _isBucketInside = NSNumber(booleanLiteral: newValue)
+        }
     }
 }

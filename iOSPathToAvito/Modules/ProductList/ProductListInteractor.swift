@@ -2,83 +2,103 @@ import Foundation
 import UIKit
 
 protocol ProductListInteractorInput: AnyObject {
-    // fetching some data
+    func setupProducts()
     
-    func fetchProducts()
+    func change(product: [UUID: Product])
     
-    func changeOfProductBucketState(id: UUID?)
-    
-    func chageOfProductFavoriteState(id: UUID?)
+    func subjectObject() -> SubjectInteractorProtocol?
 }
 
-protocol ProductListInteractorOutput: AnyObject {
-    // result of fetching
-    
+public protocol ProductListInteractorOutput: AnyObject {
     func productFetchingError(title: String)
     
     func products(list: [UUID: Product])
 }
 
-final class ProductListInteractor: ProductListInteractorInput {
+final class ProductListInteractor: ProductListInteractorInput,
+                                   ObserverInteractor {
     
-    public weak var output: ProductListInteractorOutput?
+    var id: String = UUID().uuidString
+    
+    public weak var output: ObserverInteractorOutput?
+    public weak var outputToPresenter: ProductListInteractorOutput?
     private let loader: LoaderProtocol
-    private let dataStore: DataStoreProtocol
+    private let dataManager: DS
+    public var subject: SubjectInteractorProtocol?
     
-    init(loader: LoaderProtocol, dataStore: DataStoreProtocol) {
+    var products: [UUID: Product] = [:]
+    
+    init(loader: LoaderProtocol, dataManager: DS) {
         self.loader = loader
-        self.dataStore = dataStore
+        self.dataManager = dataManager
     }
     
-    func changeOfProductBucketState(id: UUID?) {
-        guard let id = id else {
+    public func subjectObject() -> SubjectInteractorProtocol? {
+        return subject
+    }
+    
+    public func change(product: [UUID: Product]) {
+        if let product = product.first {
+            products[product.key] = product.value
+            subject?.updateProduct(product.value)
+        }
+    }
+    
+    private func fetchFromDataBase() {
+        guard products.isEmpty else {
             return
         }
-        let products = dataStore.getProducts()
-        let productToChange = products[id]
-        productToChange?.isBucketInside = productToChange?.isBucketInside == true ? false : true
-        output?.products(list: products)
+        
+        products = Dictionary(uniqueKeysWithValues: dataManager.fetch(Product.self).map { ($0.id ?? UUID(), $0) })
     }
     
-    func chageOfProductFavoriteState(id: UUID?) {
-        guard let id = id else {
+    private func fetchFromJSON() {
+        guard products.isEmpty else {
             return
         }
-        let products = dataStore.getProducts()
-        let productToChange = products[id]
-        productToChange?.isFavorite = productToChange?.isFavorite == true ? false : true
-        output?.products(list: products)
-    }
-    
-    func fetchProducts() {
         
-        let products = dataStore.getProducts()
-        
-        if products.isEmpty {
-            guard let result = try? loader.fetchProducts() else {
-                return
-            }
-            switch result {
-            case .success(let success):
-                let convertedFromDTO = success.map {
-                    Product(
-                        id: $0.id,
-                        shopId: $0.shopId,
-                        title: $0.title,
-                        description: $0.description,
-                        price: $0.price,
-                        images: []
-                    )
-                }
-                let convertedFromDTODic: [UUID: Product] = Dictionary(uniqueKeysWithValues: convertedFromDTO.map { ($0.id, $0) })
+        guard let result = try? loader.fetchProducts() else {
+            return
+        }
+        switch result {
+        case .success(let success):
+            let convertedFromDTO = success.compactMap {
                 
-                dataStore.setProducts(convertedFromDTODic)
-                output?.products(list: convertedFromDTODic)
-            case .failure(let failure):
-                output?.productFetchingError(title: failure.localizedDescription)
+                let product = dataManager.create(Product.self)!
+                
+                product.id = $0.id
+                product.shopId = $0.shopId
+                product.title = $0.title
+                product.productDescription = $0.description
+                product.price = $0.price
+                product.isFavorite = false
+                product.isBucketInside = false
+                
+                createProduct(product)
+                return product
             }
-        } else {
-            output?.products(list: products)
+            let convertedFromDTODic: [UUID: Product] = Dictionary(uniqueKeysWithValues: convertedFromDTO.map { ($0.id ?? UUID(), $0) })
+            
+            products = convertedFromDTODic
+        case .failure(let failure):
+            debugPrint(failure.localizedDescription)
+            outputToPresenter?.productFetchingError(title: failure.localizedDescription)
         }
+    }
+    
+    public func setupProducts() {
+        
+        guard products.isEmpty else {
+            return
+        }
+        
+        fetchFromDataBase()
+        fetchFromJSON()
+    }
+}
+
+extension ProductListInteractor: ObserverInteractorOutput {
+    func update(list: [UUID : Product]) {
+        outputToPresenter?.products(list: list)
     }
 }

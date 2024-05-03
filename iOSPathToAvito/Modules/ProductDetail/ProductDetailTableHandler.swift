@@ -1,10 +1,6 @@
 import UIKit
 public class ProductDetailTableHandler: NSObject {
-    let currentProduct: Product
-    
-    init(currentProduct: Product) {
-        self.currentProduct = currentProduct
-    }
+    var currentProduct: Product?
 }
 
 extension ProductDetailTableHandler: UITableViewDataSource {
@@ -21,13 +17,13 @@ extension ProductDetailTableHandler: UITableViewDataSource {
         switch indexPath.row {
         case 0:
             cell.textLabel?.text = "Название"
-            cell.detailTextLabel?.text = currentProduct.title
+            cell.detailTextLabel?.text = currentProduct?.title
         case 1:
             cell.textLabel?.text = "Описание"
-            cell.detailTextLabel?.text = currentProduct.description
+            cell.detailTextLabel?.text = currentProduct?.productDescription
         case 2:
             cell.textLabel?.text = "Цена"
-            cell.detailTextLabel?.text = currentProduct.title
+            cell.detailTextLabel?.text = currentProduct?.title
         default:
             return cell
         }

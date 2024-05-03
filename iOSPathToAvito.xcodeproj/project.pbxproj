@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C1247C9D2BE4D2AD008F47A8 /* CoreDataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1247C9C2BE4D2AD008F47A8 /* CoreDataService.swift */; };
+		C1247CA52BE51269008F47A8 /* ChangebaleProductProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1247CA42BE51269008F47A8 /* ChangebaleProductProtocol.swift */; };
+		C1247CA72BE53504008F47A8 /* ObserverInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1247CA62BE53504008F47A8 /* ObserverInteractor.swift */; };
+		C1247CA92BE535C3008F47A8 /* SubjectInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1247CA82BE535C3008F47A8 /* SubjectInteractor.swift */; };
+		C1247CAB2BE57E4B008F47A8 /* ProductDetailInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1247CAA2BE57E4B008F47A8 /* ProductDetailInteractor.swift */; };
 		C1462C382BDBCB30001171F5 /* DataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1462C372BDBCB30001171F5 /* DataStore.swift */; };
 		C17620B42BC7D6BC00CFC0B1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17620B32BC7D6BC00CFC0B1 /* AppDelegate.swift */; };
 		C17620B62BC7D6BC00CFC0B1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C17620B52BC7D6BC00CFC0B1 /* SceneDelegate.swift */; };
@@ -48,6 +53,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C1247C9C2BE4D2AD008F47A8 /* CoreDataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataService.swift; sourceTree = "<group>"; };
+		C1247CA42BE51269008F47A8 /* ChangebaleProductProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangebaleProductProtocol.swift; sourceTree = "<group>"; };
+		C1247CA62BE53504008F47A8 /* ObserverInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObserverInteractor.swift; sourceTree = "<group>"; };
+		C1247CA82BE535C3008F47A8 /* SubjectInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubjectInteractor.swift; sourceTree = "<group>"; };
+		C1247CAA2BE57E4B008F47A8 /* ProductDetailInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailInteractor.swift; sourceTree = "<group>"; };
 		C1462C372BDBCB30001171F5 /* DataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStore.swift; sourceTree = "<group>"; };
 		C17620B02BC7D6BC00CFC0B1 /* iOSPathToAvito.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSPathToAvito.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C17620B32BC7D6BC00CFC0B1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -219,6 +229,10 @@
 				C17654EA2BD9086800EEEF12 /* Loader.swift */,
 				C17654F32BD92C4100EEEF12 /* JSONReadable.swift */,
 				C1462C372BDBCB30001171F5 /* DataStore.swift */,
+				C1247C9C2BE4D2AD008F47A8 /* CoreDataService.swift */,
+				C1247CA42BE51269008F47A8 /* ChangebaleProductProtocol.swift */,
+				C1247CA82BE535C3008F47A8 /* SubjectInteractor.swift */,
+				C1247CA62BE53504008F47A8 /* ObserverInteractor.swift */,
 			);
 			path = Serivces;
 			sourceTree = "<group>";
@@ -237,6 +251,7 @@
 			children = (
 				C176550D2BDADFEA00EEEF12 /* ProductDetailViewController.swift */,
 				C176550F2BDADFF700EEEF12 /* ProductDetailPresenter.swift */,
+				C1247CAA2BE57E4B008F47A8 /* ProductDetailInteractor.swift */,
 				C17655132BDAE02F00EEEF12 /* ProductDetailTableHandler.swift */,
 			);
 			path = ProductDetail;
@@ -326,17 +341,21 @@
 				C17654BB2BD3873900EEEF12 /* Coordinator.swift in Sources */,
 				C17620B42BC7D6BC00CFC0B1 /* AppDelegate.swift in Sources */,
 				C17654E42BD8FE6100EEEF12 /* Product.swift in Sources */,
+				C1247CAB2BE57E4B008F47A8 /* ProductDetailInteractor.swift in Sources */,
 				C17654DA2BD3B07200EEEF12 /* BucketListInteractor.swift in Sources */,
 				C17620B62BC7D6BC00CFC0B1 /* SceneDelegate.swift in Sources */,
 				C17654F82BD9871700EEEF12 /* ProductListPresenter.swift in Sources */,
 				C17654C22BD3882100EEEF12 /* FavoritesViewController.swift in Sources */,
 				C17654CE2BD38F4C00EEEF12 /* AppCoordinator.swift in Sources */,
+				C1247CA72BE53504008F47A8 /* ObserverInteractor.swift in Sources */,
 				C17654C42BD3882E00EEEF12 /* ProductListViewController.swift in Sources */,
+				C1247CA52BE51269008F47A8 /* ChangebaleProductProtocol.swift in Sources */,
 				C176550C2BDA7AA900EEEF12 /* ProductCell.swift in Sources */,
 				C17654FA2BD9872300EEEF12 /* ProductListInteractor.swift in Sources */,
 				C176550E2BDADFEA00EEEF12 /* ProductDetailViewController.swift in Sources */,
 				C17654EB2BD9086800EEEF12 /* Loader.swift in Sources */,
 				C17654D62BD3AA4200EEEF12 /* TabBarPage.swift in Sources */,
+				C1247CA92BE535C3008F47A8 /* SubjectInteractor.swift in Sources */,
 				C17655102BDADFF700EEEF12 /* ProductDetailPresenter.swift in Sources */,
 				C17654E82BD9058000EEEF12 /* Shop.swift in Sources */,
 				C17654E62BD9037800EEEF12 /* ShopDTO.swift in Sources */,
@@ -354,6 +373,7 @@
 				C18B8F8B2BDD7D1600A15085 /* Dictionary+Extension.swift in Sources */,
 				C17654C62BD3883900EEEF12 /* BucketListViewController.swift in Sources */,
 				C17655022BD9878900EEEF12 /* FavoritesCoordinator.swift in Sources */,
+				C1247C9D2BE4D2AD008F47A8 /* CoreDataService.swift in Sources */,
 				C17655062BDA684400EEEF12 /* ProductListTableHandler.swift in Sources */,
 				C18B8F892BDD62D800A15085 /* ProductCellDetail.swift in Sources */,
 				C17654E12BD8FC6A00EEEF12 /* ProductDTO.swift in Sources */,

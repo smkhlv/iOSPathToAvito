@@ -31,11 +31,14 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
         let pages: [TabBarPage] = [.productList, .favorites, .bucketList]
         
         let loader: LoaderProtocol = Loader()
-        let dataStore: DataStoreProtocol = DataStore()
+        let dataManager: DS = CoreDataService()
+        //let dataManager: DS = DataStore(coreDataService: coreDataService)
+        let subjectInteractor: SubjectInteractorProtocol = SubjectInteractor()
         
         let controllers: [UINavigationController] = pages.map({ getTabController($0,
                                                                                  loader: loader,
-                                                                                 dataStore: dataStore)
+                                                                                 dataManager: dataManager,
+                                                                                 subject: subjectInteractor)
         })
         
         prepareTabBarController(withTabControllers: controllers)
@@ -57,7 +60,8 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
     
     private func getTabController(_ page: TabBarPage,
                                   loader: LoaderProtocol,
-                                  dataStore: DataStoreProtocol) -> UINavigationController {
+                                  dataManager: DS,
+                                  subject: SubjectInteractorProtocol) -> UINavigationController {
         let navController = UINavigationController()
         navController.setNavigationBarHidden(false, animated: false)
         
@@ -71,7 +75,9 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
             let productListCoordinator = ProductListCoordinator(navController)
             let build = ModuleFactory.buildProductList(coordinator: productListCoordinator,
                                                        loader: loader,
-                                                       dataStore: dataStore)
+                                                       dataManager: dataManager,
+                                                       subject: subject)
+            
             productListCoordinator.finishDelegate = self
             productListCoordinator.start(view: build)
             childCoordinators.append(productListCoordinator)
@@ -79,7 +85,8 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
             let bucketListCoordinator = BucketListCoordinator(navController)
             let build = ModuleFactory.buildBucketList(coordinator: bucketListCoordinator,
                                                       loader: loader,
-                                                      dataStore: dataStore)
+                                                      dataManager: dataManager,
+                                                      subject: subject)
             bucketListCoordinator.finishDelegate = self
             bucketListCoordinator.start(view: build)
             childCoordinators.append(bucketListCoordinator)
@@ -87,7 +94,8 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
             let favoritesCoordinator = FavoritesCoordinator(navController)
             let build = ModuleFactory.buildFavorites(coordinator: favoritesCoordinator,
                                                      loader: loader,
-                                                     dataStore: dataStore)
+                                                     dataManager: dataManager,
+                                                     subject: subject)
             favoritesCoordinator.finishDelegate = self
             favoritesCoordinator.start(view: build)
             childCoordinators.append(favoritesCoordinator)

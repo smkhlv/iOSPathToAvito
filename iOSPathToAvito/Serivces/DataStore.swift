@@ -16,6 +16,12 @@ public class DataStore: DataStoreProtocol {
     private var products: [UUID: Product] = [:]
     private var shops: [UUID: Shop] = [:]
     
+    private let coreDataService: DS
+    
+    init(coreDataService: DS) {
+        self.coreDataService = coreDataService
+    }
+    
     public func setProducts(_ products: [UUID: Product]) {
         self.products = products
     }

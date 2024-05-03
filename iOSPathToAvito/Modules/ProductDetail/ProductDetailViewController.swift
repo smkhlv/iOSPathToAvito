@@ -1,6 +1,8 @@
 import UIKit
 
-public protocol ProductDetailViewControllerProtocol: AnyObject { }
+public protocol ProductDetailViewControllerProtocol: AnyObject {
+    func updateDetail(_ product: Product)
+}
 
 public final class ProductDetailViewController: UIViewController,
                                                 ProductDetailViewControllerProtocol {
@@ -11,12 +13,45 @@ public final class ProductDetailViewController: UIViewController,
     
     private var tableHandler: ProductDetailTableHandler
     
-    init(presenter: ProductDetailPresenterProtocol,
-         tableHandler: ProductDetailTableHandler) {
+    private var imageOfFavorite: UIImage?
+    private var imageOfBucket: UIImage?
+    
+    private var stateOfFavorite: StateButton = .unpressed
+    private var stateOfBucket: StateButton = .unpressed
+    
+    private lazy var toBucketButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: imageOfBucket,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(toBucketWasClicked))
+        return button
+    }()
+    
+    private lazy var toFavoritesButton: UIBarButtonItem = {
+        let button = UIBarButtonItem(image: imageOfFavorite,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(toFavoritesWasClicked))
+        return button
+    }()
+    
+    init(
+        presenter: ProductDetailPresenterProtocol,
+        tableHandler: ProductDetailTableHandler,
+        imageOfFavorite: UIImage?,
+        imageOfBucket: UIImage?
+    ) {
         self.presenter = presenter
         self.tableHandler = tableHandler
+        self.imageOfBucket = imageOfBucket
+        self.imageOfFavorite = imageOfFavorite
         
         super.init(nibName: nil, bundle: nil)
+    }
+    
+    public func updateDetail(_ product: Product) {
+        tableHandler.currentProduct = product
+        tableView?.reloadData()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -26,7 +61,29 @@ public final class ProductDetailViewController: UIViewController,
     public override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupNavigationBarButtons()
         setupTable()
+        presenter.showProduct()
+    }
+    
+    private func setupNavigationBarButtons() {
+       navigationItem.rightBarButtonItems = [toBucketButton, toFavoritesButton]
+    }
+    
+    @objc private func toFavoritesWasClicked() {
+        let image = stateOfFavorite == .unpressed ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart")
+        toFavoritesButton.image = image
+        stateOfFavorite = stateOfFavorite == .unpressed ? .pressed : .unpressed
+        
+        presenter.changeIsFavorite()
+    }
+    
+    @objc private func toBucketWasClicked() {
+        let image = stateOfBucket == .unpressed ? UIImage(systemName: "cart.fill") : UIImage(systemName: "cart")
+        toBucketButton.image = image
+        stateOfBucket = stateOfBucket == .unpressed ? .pressed : .unpressed
+        
+        presenter.changeIsBucketInside()
     }
     
     private func setupTable() {
