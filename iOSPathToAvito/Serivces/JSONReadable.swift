@@ -1,9 +1,11 @@
 import Foundation
 
+// Protocol defining a method for reading local JSON files
 public protocol JSONReadable {
     func readLocalJSONFile(forName name: String) throws -> Result<Data, JSONError>
 }
 
+// Enumeration to represent errors that might occur during JSON reading
 public enum JSONError: Error {
     case fileNotFound
     case fileReadFailed

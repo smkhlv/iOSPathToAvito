@@ -1,15 +1,17 @@
 import Foundation
 import UIKit
 
+// Protocol defining the input methods for the bucket list interactor
 protocol BucketListInteractorInput: AnyObject {
-    func change(product: [UUID: Product])
     
-    func subjectObject() -> SubjectInteractorProtocol?
+    /// Method to handle changes in products
+    /// - Parameter product: The dictionary containing the product to be changed
+    func change(product: [UUID: Product])
 }
 
+// Protocol defining the output methods for the bucket list interactor
 protocol BucketListInteractorOutput: AnyObject {
     func productFetchingError(title: String)
-    
     func products(list: [UUID: Product])
 }
 
@@ -20,15 +22,11 @@ final class BucketListInteractor: BucketListInteractorInput, ObserverInteractor 
     
     public weak var output: ObserverInteractorOutput?
     public weak var outputToPresenter: BucketListInteractorOutput?
+    public weak var subject: SubjectInteractorProtocol?
     private let loader: LoaderProtocol
-    private let dataManager: DS
-    public var subject: SubjectInteractorProtocol?
+    private let dataManager: DataServiceProtocol
     
-    func subjectObject() -> SubjectInteractorProtocol? {
-        return subject
-    }
-    
-    init(loader: LoaderProtocol, dataManager: DS) {
+    init(loader: LoaderProtocol, dataManager: DataServiceProtocol) {
         self.loader = loader
         self.dataManager = dataManager
     }
@@ -40,6 +38,8 @@ final class BucketListInteractor: BucketListInteractorInput, ObserverInteractor 
         }
     }
 }
+
+// MARK: - ObserverInteractorOutput
 
 extension BucketListInteractor: ObserverInteractorOutput {
     func update(list: [UUID : Product]) {

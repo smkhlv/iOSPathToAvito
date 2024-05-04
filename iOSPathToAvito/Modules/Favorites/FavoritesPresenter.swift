@@ -1,10 +1,12 @@
 import Foundation
 
+// Protocol defining the interface for FavoritesPresenter interactions
 protocol FavoritesPresenterProtocol: AnyObject { }
 
 final class FavoritesPresenter: FavoritesPresenterProtocol {
     
     public weak var view: FavoritesViewControllerProtocol?
+    public weak var subject: SubjectInteractorProtocol?
     private let coordinator: FavoritesCoordinatorProtocol
     private let interactor: FavoritesInteractorInput
     
@@ -17,6 +19,8 @@ final class FavoritesPresenter: FavoritesPresenterProtocol {
     }
 }
 
+// MARK: - FavoritesInteractorOutput
+
 extension FavoritesPresenter: FavoritesInteractorOutput {
     func productFetchingError(title: String) {
         print(title)
@@ -27,10 +31,12 @@ extension FavoritesPresenter: FavoritesInteractorOutput {
     }
 }
 
+// MARK: - ProductCellDelegate
+
 extension FavoritesPresenter: ProductCellDelegate {
     
     func showDetail(product: Product) {
-        coordinator.showDetail(product: product, subject: interactor.subjectObject())
+        coordinator.showDetail(product: product, subject: subject)
     }
     
     func change(product: [UUID: Product]) {

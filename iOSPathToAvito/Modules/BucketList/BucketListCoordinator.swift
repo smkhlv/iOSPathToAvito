@@ -1,6 +1,12 @@
 import UIKit
 
+// Protocol defining the methods a bucket list coordinator should implement
 protocol BucketListCoordinatorProtocol: AnyObject {
+    
+    /// Method to present the detail view for a product
+    /// - Parameters:
+    ///   - product: The product to show detail for
+    ///   - subject: The subject interactor for observing changes
     func showDetail(product: Product, subject: SubjectInteractorProtocol?)
 }
 
@@ -28,6 +34,8 @@ final class BucketListCoordinator: BucketListCoordinatorProtocol, Coordinator {
         self.navigationController = navigationController
     }
 }
+
+// MARK: - CoordinatorFinishDelegate
 
 extension BucketListCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) { }

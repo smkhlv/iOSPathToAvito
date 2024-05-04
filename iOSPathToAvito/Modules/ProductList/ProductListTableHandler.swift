@@ -1,10 +1,13 @@
 import UIKit
 
+// Handles the table view data source and delegate methods for displaying products
 public final class ProductListTableHandler: NSObject {
     var products: [UUID: Product]?
     
     public weak var delegate: ProductCellDelegate?
 }
+
+// MARK: - UITableViewDataSource
 
 extension ProductListTableHandler: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -19,8 +22,13 @@ extension ProductListTableHandler: UITableViewDataSource {
             return UITableViewCell()
         }
 
-        let imageOfFavorite = product.value.isFavorite ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart")
-        let imageOfBucket = product.value.isBucketInside ? UIImage(systemName: "cart.fill") : UIImage(systemName: "cart")
+        let imageOfFavorite = product.value.isFavorite ?
+        UIImage(systemName: PublicConstants.SystemImages.heartFill) :
+        UIImage(systemName: PublicConstants.SystemImages.heart)
+        
+        let imageOfBucket = product.value.isBucketInside ?
+        UIImage(systemName: PublicConstants.SystemImages.cartFill) :
+        UIImage(systemName: PublicConstants.SystemImages.cart)
         
         cell.configureCell(delegate: delegate,
                            product: product.value,
@@ -30,6 +38,8 @@ extension ProductListTableHandler: UITableViewDataSource {
         return cell
     }
 }
+
+// MARK: - UITableViewDelegate
 
 extension ProductListTableHandler: UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

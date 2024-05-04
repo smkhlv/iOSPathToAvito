@@ -1,10 +1,14 @@
 import Foundation
 
+// Protocol defining the interface for the BucketListPresenter
 protocol BucketListPresenterProtocol: AnyObject { }
 
+
+// Presenter responsible for coordinating actions for the bucket list
 final class BucketListPresenter: BucketListPresenterProtocol {
     
     public weak var view: BucketListViewControllerProtocol?
+    public weak var subject: SubjectInteractorProtocol?
     private let coordinator: BucketListCoordinatorProtocol
     private let interactor: BucketListInteractorInput
     
@@ -17,6 +21,8 @@ final class BucketListPresenter: BucketListPresenterProtocol {
     }
 }
 
+// MARK: - BucketListInteractorOutput
+
 extension BucketListPresenter: BucketListInteractorOutput {
     func productFetchingError(title: String) {
         print(title)
@@ -27,9 +33,11 @@ extension BucketListPresenter: BucketListInteractorOutput {
     }
 }
 
+// MARK: - ProductCellDelegate
+
 extension BucketListPresenter: ProductCellDelegate {
     func showDetail(product: Product) {
-        coordinator.showDetail(product: product, subject: interactor.subjectObject())
+        coordinator.showDetail(product: product, subject: subject)
     }
     
     func change(product: [UUID: Product]) {

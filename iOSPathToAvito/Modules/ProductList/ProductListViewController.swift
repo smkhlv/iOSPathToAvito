@@ -1,7 +1,10 @@
 import UIKit
 
+// Protocol defining the interface for the Product List View Controller
 public protocol ProductListViewControllerProtocol: AnyObject {
     
+    /// Updates the product list table with the provided products
+    /// - Parameter products: The dictionary of products with UUID as keys
     func updateProductListTable(products: [UUID: Product])
 }
 

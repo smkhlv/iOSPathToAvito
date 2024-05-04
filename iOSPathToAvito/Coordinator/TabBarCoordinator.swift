@@ -1,12 +1,17 @@
 import UIKit
 
+// Protocol defining the coordinator responsible for managing tab-based navigation
 protocol TabCoordinatorProtocol: Coordinator {
+    // Tab bar controller associated with the coordinator
     var tabBarController: UITabBarController { get set }
     
+    // Method to select a specific tab page
     func selectPage(_ page: TabBarPage)
     
+    // Method to set the selected index of the tab bar
     func setSelectedIndex(_ index: Int)
     
+    // Method to get the currently selected tab page
     func currentPage() -> TabBarPage?
 }
 
@@ -31,8 +36,7 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
         let pages: [TabBarPage] = [.productList, .favorites, .bucketList]
         
         let loader: LoaderProtocol = Loader()
-        let dataManager: DS = CoreDataService()
-        //let dataManager: DS = DataStore(coreDataService: coreDataService)
+        let dataManager: DataServiceProtocol = DataRequestService(coreDataAssembler: CoreDataAssembler())
         let subjectInteractor: SubjectInteractorProtocol = SubjectInteractor()
         
         let controllers: [UINavigationController] = pages.map({ getTabController($0,
@@ -60,7 +64,7 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
     
     private func getTabController(_ page: TabBarPage,
                                   loader: LoaderProtocol,
-                                  dataManager: DS,
+                                  dataManager: DataServiceProtocol,
                                   subject: SubjectInteractorProtocol) -> UINavigationController {
         let navController = UINavigationController()
         navController.setNavigationBarHidden(false, animated: false)
@@ -117,6 +121,8 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
     }
 }
 
+// MARK: - CoordinatorFinishDelegate
+
 extension TabCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) { }
 }
@@ -124,7 +130,5 @@ extension TabCoordinator: CoordinatorFinishDelegate {
 // MARK: - UITabBarControllerDelegate
 extension TabCoordinator: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController,
-                          didSelect viewController: UIViewController) {
-        // Some implementation
-    }
+                          didSelect viewController: UIViewController) { }
 }

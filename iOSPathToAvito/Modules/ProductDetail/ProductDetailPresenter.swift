@@ -1,16 +1,25 @@
 import Foundation
 
-protocol ProductDetailPresenterProtocol: AnyObject { 
+// Protocol for Product Detail Presenter interactions
+public protocol ProductDetailPresenterProtocol: AnyObject {
+    
+    /// Updates the product in the presenter
+    /// - Parameter product: The product to update
     func updateProduct(_ product: Product)
     
+    /// Displays the current product
     func showProduct()
     
+    /// Changes the favorite status of the current product
     func changeIsFavorite()
     
+    /// Changes the bucket inside status of the current product
     func changeIsBucketInside()
+    
+    func removeSubjectFromObservers()
 }
 
-final class ProductDetailPresenter: ProductDetailPresenterProtocol {
+public final class ProductDetailPresenter: ProductDetailPresenterProtocol {
     public weak var view: ProductDetailViewControllerProtocol?
     
     private let interactor: ProductDetailInteractorInput
@@ -19,25 +28,31 @@ final class ProductDetailPresenter: ProductDetailPresenterProtocol {
         self.interactor = interactor
     }
     
-    func updateProduct(_ product: Product) {
+    public func updateProduct(_ product: Product) {
         interactor.updateProduct(product)
     }
     
-    func showProduct() {
-        interactor.showProduct() 
+    public func showProduct() {
+        interactor.showProduct()
     }
     
-    func changeIsFavorite() {
+    public func changeIsFavorite() {
         interactor.changeIsFavorite()
     }
     
-    func changeIsBucketInside() {
+    public func changeIsBucketInside() {
         interactor.changeIsBucketInside()
+    }
+    
+    public func removeSubjectFromObservers() {
+        interactor.removeSubjectFromObservers()
     }
 }
 
+// MARK: - ProductDetailInteractorOutput
+
 extension ProductDetailPresenter: ProductDetailInteractorOutput {
-    func showProduct(_ product: Product) {
+    public func showProduct(_ product: Product) {
         view?.updateDetail(product)
     }
 }

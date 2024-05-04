@@ -1,6 +1,12 @@
 import UIKit
 
+// Protocol defining the methods for coordinating product list interactions
 protocol ProductListCoordinatorProtocol: AnyObject {
+    
+    /// Shows the product detail view for the specified product
+    /// - Parameters:
+    ///   - product: The product to display details for
+    ///   - subject: The subject interactor for observing product changes
     func showDetail(product: Product, subject: SubjectInteractorProtocol?)
 }
 
@@ -28,6 +34,8 @@ final class ProductListCoordinator: ProductListCoordinatorProtocol, Coordinator 
         self.navigationController = navigationController
     }
 }
+
+// MARK: - CoordinatorFinishDelegate
 
 extension ProductListCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) { }

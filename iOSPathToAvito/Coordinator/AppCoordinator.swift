@@ -1,6 +1,8 @@
 import UIKit
 
+// Protocol defining the coordinator responsible for managing the main app flow
 protocol AppCoordinatorProtocol: Coordinator {
+    // Method to show the main flow of the app
     func showMainFlow()
 }
 
@@ -30,8 +32,11 @@ class AppCoordinator: AppCoordinatorProtocol {
     }
 }
 
-extension AppCoordinator: CoordinatorFinishDelegate {
-    func coordinatorDidFinish(childCoordinator: Coordinator) {
+// MARK: - CoordinatorFinishDelegate
 
+extension AppCoordinator: CoordinatorFinishDelegate {
+    // Method called when a child coordinator finishes
+    func coordinatorDidFinish(childCoordinator: Coordinator) {
+        // Handle any cleanup or additional logic here
     }
 }

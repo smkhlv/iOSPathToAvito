@@ -1,5 +1,6 @@
 import Foundation
 
+// Structure representing a Data Transfer Object (DTO) for shop data
 public struct ShopDTO: Codable {
     let id: UUID
     

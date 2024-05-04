@@ -1,7 +1,10 @@
 import UIKit
 
+// Protocol defining the interface for the BucketListViewController
 public protocol BucketListViewControllerProtocol: AnyObject {
     
+    /// Method to update the product list table with the given products
+        /// - Parameter products: The dictionary containing the products to be displayed
     func updateProductListTable(products: [UUID: Product])
 }
 

@@ -1,17 +1,25 @@
 import Foundation
 import UIKit
 
+// Protocol defining the input methods for the Product List Interactor
 protocol ProductListInteractorInput: AnyObject {
+    
+    /// Sets up the products to be displayed in the product list
     func setupProducts()
     
+    /// Changes the state of the product
+    /// - Parameter product: The product with its updated state
     func change(product: [UUID: Product])
-    
-    func subjectObject() -> SubjectInteractorProtocol?
 }
 
+// Protocol defining the output methods for the Product List Interactor
 public protocol ProductListInteractorOutput: AnyObject {
+    /// Notifies about an error occurred during product fetching
+    /// - Parameter title: The title of the error
     func productFetchingError(title: String)
     
+    /// Passes the fetched products to the presenter
+    /// - Parameter list: The dictionary of products with UUID as keys
     func products(list: [UUID: Product])
 }
 
@@ -22,19 +30,15 @@ final class ProductListInteractor: ProductListInteractorInput,
     
     public weak var output: ObserverInteractorOutput?
     public weak var outputToPresenter: ProductListInteractorOutput?
+    public weak var subject: SubjectInteractorProtocol?
     private let loader: LoaderProtocol
-    private let dataManager: DS
-    public var subject: SubjectInteractorProtocol?
+    private let dataManager: DataServiceProtocol
     
     var products: [UUID: Product] = [:]
     
-    init(loader: LoaderProtocol, dataManager: DS) {
+    init(loader: LoaderProtocol, dataManager: DataServiceProtocol) {
         self.loader = loader
         self.dataManager = dataManager
-    }
-    
-    public func subjectObject() -> SubjectInteractorProtocol? {
-        return subject
     }
     
     public func change(product: [UUID: Product]) {
@@ -96,6 +100,8 @@ final class ProductListInteractor: ProductListInteractorInput,
         fetchFromJSON()
     }
 }
+
+// MARK: - ObserverInteractorOutput Extension
 
 extension ProductListInteractor: ObserverInteractorOutput {
     func update(list: [UUID : Product]) {

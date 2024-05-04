@@ -1,8 +1,10 @@
 import UIKit
 
+// Enum representing the different pages of the tab bar
 enum TabBarPage {
     case bucketList, productList, favorites
     
+    // Initialize TabBarPage based on index
     init?(index: Int) {
         switch index {
         case 0:
@@ -16,6 +18,7 @@ enum TabBarPage {
         }
     }
     
+    // Title of the tab page
     var title: String {
         switch self {
         case .productList:
@@ -27,6 +30,7 @@ enum TabBarPage {
         }
     }
 
+    // Index of the tab page
     var pageIndex: Int {
         switch self {
         case .productList:
@@ -38,6 +42,7 @@ enum TabBarPage {
         }
     }
     
+    // Image for the tab page
     var image: UIImage? {
         switch self {
         case .productList:
@@ -49,6 +54,7 @@ enum TabBarPage {
         }
     }
     
+    // Selected image for the tab page
     var selectedImage: UIImage? {
         switch self {
         case .productList:

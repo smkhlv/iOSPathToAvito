@@ -1,6 +1,13 @@
 import UIKit
 
+/// Protocol defining the behavior of a Favorites Coordinator
 protocol FavoritesCoordinatorProtocol: AnyObject {
+    
+    /// Method to show product detail
+    ///
+    /// - Parameters:
+    ///   - product: The product to show detail for
+    ///   - subject: The subject interactor protocol, if applicable
     func showDetail(product: Product, subject: SubjectInteractorProtocol?)
 }
 
@@ -28,6 +35,8 @@ final class FavoritesCoordinator: FavoritesCoordinatorProtocol, Coordinator {
         self.navigationController = navigationController
     }
 }
+
+// MARK: - CoordinatorFinishDelegate
 
 extension FavoritesCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) { }

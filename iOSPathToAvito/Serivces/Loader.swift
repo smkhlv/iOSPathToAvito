@@ -1,12 +1,16 @@
 import Foundation
 
+// Protocol defining methods for loading shop and product data
 public protocol LoaderProtocol {
     
+    // Method to fetch shop data
     func fetchShops() throws -> Result<[ShopDTO], LoaderError>
     
+    // Method to fetch product data
     func fetchProducts() throws -> Result<[ProductDTO], LoaderError>
 }
 
+// Enumeration to represent errors that might occur during data loading
 public enum LoaderError: Error {
     case decodeError
     case readFromFileError

@@ -12,6 +12,7 @@ public class Product: NSManagedObject {
     @NSManaged private var _isFavorite: NSNumber?
     @NSManaged private var _isBucketInside: NSNumber?
     
+    // Computed property to expose whether the product is marked as favorite
     public var isFavorite: Bool {
         get {
             return _isFavorite?.boolValue ?? false
@@ -21,6 +22,7 @@ public class Product: NSManagedObject {
         }
     }
     
+    // Computed property to expose whether the product is inside the bucket
     public var isBucketInside: Bool {
         get {
             return _isBucketInside?.boolValue ?? false

@@ -1,5 +1,6 @@
 import UIKit
 
+// Protocol for ProductDetailViewController interactions
 public protocol ProductDetailViewControllerProtocol: AnyObject {
     func updateDetail(_ product: Product)
 }
@@ -12,15 +13,24 @@ public final class ProductDetailViewController: UIViewController,
     private weak var tableView: UITableView?
     
     private var tableHandler: ProductDetailTableHandler
-    
-    private var imageOfFavorite: UIImage?
-    private var imageOfBucket: UIImage?
-    
+
     private var stateOfFavorite: StateButton = .unpressed
     private var stateOfBucket: StateButton = .unpressed
     
+    private var imageOfBucketInside: UIImage? {
+       return stateOfFavorite == .pressed ?
+        UIImage(systemName: PublicConstants.SystemImages.heartFill) :
+        UIImage(systemName: PublicConstants.SystemImages.heart)
+    }
+    
+    private var imageOfFavorite: UIImage? {
+        return stateOfBucket == .pressed ?
+        UIImage(systemName: PublicConstants.SystemImages.cartFill) :
+        UIImage(systemName: PublicConstants.SystemImages.cart)
+    }
+    
     private lazy var toBucketButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(image: imageOfBucket,
+        let button = UIBarButtonItem(image: imageOfBucketInside,
                                      style: .plain,
                                      target: self,
                                      action: #selector(toBucketWasClicked))
@@ -38,52 +48,35 @@ public final class ProductDetailViewController: UIViewController,
     init(
         presenter: ProductDetailPresenterProtocol,
         tableHandler: ProductDetailTableHandler,
-        imageOfFavorite: UIImage?,
-        imageOfBucket: UIImage?
+        stateOfFavorite: StateButton,
+        stateOfBucket: StateButton
     ) {
         self.presenter = presenter
         self.tableHandler = tableHandler
-        self.imageOfBucket = imageOfBucket
-        self.imageOfFavorite = imageOfFavorite
+        self.stateOfFavorite = stateOfFavorite
+        self.stateOfBucket = stateOfBucket
         
         super.init(nibName: nil, bundle: nil)
     }
     
-    public func updateDetail(_ product: Product) {
-        tableHandler.currentProduct = product
-        tableView?.reloadData()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
+    // MARK: - Lifecycle
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupNavigationBarButtons()
         setupTable()
         presenter.showProduct()
     }
     
+    public override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        presenter.removeSubjectFromObservers()
+    }
+
+    // MARK: - Setup
+    
     private func setupNavigationBarButtons() {
-       navigationItem.rightBarButtonItems = [toBucketButton, toFavoritesButton]
-    }
-    
-    @objc private func toFavoritesWasClicked() {
-        let image = stateOfFavorite == .unpressed ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart")
-        toFavoritesButton.image = image
-        stateOfFavorite = stateOfFavorite == .unpressed ? .pressed : .unpressed
-        
-        presenter.changeIsFavorite()
-    }
-    
-    @objc private func toBucketWasClicked() {
-        let image = stateOfBucket == .unpressed ? UIImage(systemName: "cart.fill") : UIImage(systemName: "cart")
-        toBucketButton.image = image
-        stateOfBucket = stateOfBucket == .unpressed ? .pressed : .unpressed
-        
-        presenter.changeIsBucketInside()
+       navigationItem.rightBarButtonItems = [toFavoritesButton, toBucketButton]
     }
     
     private func setupTable() {
@@ -103,5 +96,43 @@ public final class ProductDetailViewController: UIViewController,
             table.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
             table.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor)
         ])
+    }
+    
+    // MARK: - Actions
+    
+    @objc private func toFavoritesWasClicked() {
+        toggleFavoriteState()
+        presenter.changeIsFavorite()
+    }
+    
+    @objc private func toBucketWasClicked() {
+        toggleBucketState()
+        presenter.changeIsBucketInside()
+    }
+    
+    // MARK: - Helper
+    
+    private func toggleFavoriteState() {
+        stateOfFavorite = stateOfFavorite == .pressed ? .unpressed : .pressed
+        toFavoritesButton.image = imageOfFavorite
+        presenter.changeIsFavorite()
+    }
+    
+    private func toggleBucketState() {
+        stateOfBucket = stateOfBucket == .pressed ? .unpressed : .pressed
+        toBucketButton.image = imageOfBucketInside
+        presenter.changeIsBucketInside()
+    }
+    
+    // MARK: - ProductDetailViewControllerProtocol
+    
+    public func updateDetail(_ product: Product) {
+        tableHandler.currentProduct = product
+        tableView?.reloadData()
+    }
+    
+    // Required initializer for subclasses of UIViewController
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

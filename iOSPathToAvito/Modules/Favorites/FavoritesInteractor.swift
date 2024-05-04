@@ -1,15 +1,16 @@
 import Foundation
 import UIKit
 
+/// Defining the input methods for the Favorites Interactor
 protocol FavoritesInteractorInput: AnyObject {
     
+    /// Method to change the product
     func change(product: [UUID: Product])
-    
-    func subjectObject() -> SubjectInteractorProtocol?
 }
 
 protocol FavoritesInteractorOutput: AnyObject {
-
+    
+    /// Method to notify about product fetching error
     func productFetchingError(title: String)
     
     func products(list: [UUID: Product])
@@ -18,23 +19,19 @@ protocol FavoritesInteractorOutput: AnyObject {
 final class FavoritesInteractor: FavoritesInteractorInput, ObserverInteractor {
     
     var id: String = UUID().uuidString
-
+    
     public weak var output: ObserverInteractorOutput?
     public weak var outputToPresenter: FavoritesInteractorOutput?
+    public weak var subject: SubjectInteractorProtocol?
     
     private let loader: LoaderProtocol
-    private let dataManager: DS
-    public var subject: SubjectInteractorProtocol?
+    private let dataManager: DataServiceProtocol
     
     var products: [UUID: Product] = [:]
     
-    init(loader: LoaderProtocol, dataManager: DS) {
+    init(loader: LoaderProtocol, dataManager: DataServiceProtocol) {
         self.loader = loader
         self.dataManager = dataManager
-    }
-    
-    public func subjectObject() -> SubjectInteractorProtocol? {
-        return subject
     }
     
     public func change(product: [UUID: Product]) {
@@ -44,6 +41,8 @@ final class FavoritesInteractor: FavoritesInteractorInput, ObserverInteractor {
         }
     }
 }
+
+// MARK: - ObserverInteractorOutput
 
 extension FavoritesInteractor: ObserverInteractorOutput {
     func update(list: [UUID : Product]) {

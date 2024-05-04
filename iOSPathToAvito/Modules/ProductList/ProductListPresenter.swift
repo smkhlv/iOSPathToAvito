@@ -1,12 +1,16 @@
 import Foundation
 
+// Protocol defining the interface for the Product List Presenter
 protocol ProductListPresenterProtocol: AnyObject {
+    
+    // Fetches the products to be displayed in the product list
     func fetchProducts()
 }
 
 final class ProductListPresenter: ProductListPresenterProtocol {
     
     public weak var view: ProductListViewControllerProtocol?
+    public var subject: SubjectInteractorProtocol?
     private let coordinator: ProductListCoordinatorProtocol
     private let interactor: ProductListInteractorInput
     
@@ -23,6 +27,8 @@ final class ProductListPresenter: ProductListPresenterProtocol {
     }
 }
 
+// MARK: - ProductListInteractorOutput
+
 extension ProductListPresenter: ProductListInteractorOutput {
     func productFetchingError(title: String) {
         debugPrint(title)
@@ -33,9 +39,11 @@ extension ProductListPresenter: ProductListInteractorOutput {
     }
 }
 
+// MARK: - ProductCellDelegate
+
 extension ProductListPresenter: ProductCellDelegate {
     func showDetail(product: Product) {
-        coordinator.showDetail(product: product, subject: interactor.subjectObject())
+        coordinator.showDetail(product: product, subject: subject)
     }
     
     func change(product: [UUID: Product]) {

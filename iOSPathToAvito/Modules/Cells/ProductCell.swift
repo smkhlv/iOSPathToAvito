@@ -1,23 +1,34 @@
 import UIKit
 
+// Delegate protocol for interacting with ProductCell actions
 public protocol ProductCellDelegate: AnyObject {
-
+    // Method called when the favorite or bucket state of a product changes
     func change(product: [UUID: Product])
     
+    // Method called when a product detail is requested
     func showDetail(product: Product)
 }
 
+// Protocol defining the methods required for a ProductCell
 public protocol ProductCellProtocol {
+    // Method to set the delegate for the ProductCell
     func setDelegate(_ delegate: ProductCellDelegate?)
 }
 
 public class ProductCell: UITableViewCell {
     
+    enum Constants {
+        // Static numbers
+        enum Numbers {
+            static let buttonSize: CGFloat = 20
+            static let leadingMargin: CGFloat = 20
+            static let trailingBucketMargin: CGFloat = -20
+            static let trailingFavoriteMargin: CGFloat = -10
+            static let spacingBetweenButtons: CGFloat = 10
+        }
+    }
+    
     private weak var delegate: ProductCellDelegate?
-    
-    private var stateOfFavorite: StateButton = .unpressed
-    private var stateOfBucket: StateButton = .unpressed
-    
     private var product: Product?
     
     private lazy var toBucketButton: UIButton = {
@@ -70,23 +81,26 @@ public class ProductCell: UITableViewCell {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             titleLabel.centerYAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.centerYAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 20)
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, 
+                                                constant: Constants.Numbers.leadingMargin)
         ])
         
         toBucketButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             toBucketButton.centerYAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.centerYAnchor),
-            toBucketButton.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            toBucketButton.heightAnchor.constraint(lessThanOrEqualToConstant: 20),
-            toBucketButton.widthAnchor.constraint(lessThanOrEqualToConstant: 20)
+            toBucketButton.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor,
+                                                     constant: Constants.Numbers.trailingBucketMargin),
+            toBucketButton.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.Numbers.buttonSize),
+            toBucketButton.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.Numbers.buttonSize)
         ])
         
         toFavoritesButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             toFavoritesButton.centerYAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.centerYAnchor),
-            toFavoritesButton.trailingAnchor.constraint(equalTo: toBucketButton.leadingAnchor, constant: -10),
-            toFavoritesButton.heightAnchor.constraint(lessThanOrEqualToConstant: 20),
-            toFavoritesButton.widthAnchor.constraint(lessThanOrEqualToConstant: 20)
+            toFavoritesButton.trailingAnchor.constraint(equalTo: toBucketButton.leadingAnchor,
+                                                        constant: Constants.Numbers.trailingFavoriteMargin),
+            toFavoritesButton.heightAnchor.constraint(lessThanOrEqualToConstant: Constants.Numbers.buttonSize),
+            toFavoritesButton.widthAnchor.constraint(lessThanOrEqualToConstant: Constants.Numbers.buttonSize)
         ])
     }
     
@@ -95,26 +109,34 @@ public class ProductCell: UITableViewCell {
     }
     
     @objc private func toFavoritesWasClicked() {
-        let image = stateOfFavorite == .unpressed ? UIImage(systemName: "heart.fill") : UIImage(systemName: "heart")
-        toFavoritesButton.setImage(image, for: .normal)
-        stateOfFavorite = stateOfFavorite == .unpressed ? .pressed : .unpressed
-        
-        if let product = product,
-        let id = product.id {
-            product.isFavorite = !product.isFavorite
-            delegate?.change(product: [id: product])
+        guard
+            let product = product,
+            let id = product.id else {
+            return
         }
+        let image = !product.isFavorite ?
+        UIImage(systemName: PublicConstants.SystemImages.heartFill) :
+        UIImage(systemName: PublicConstants.SystemImages.heart)
+        
+        toFavoritesButton.setImage(image, for: .normal)
+        
+        product.isFavorite = !product.isFavorite
+        delegate?.change(product: [id: product])
     }
     
     @objc private func toBucketWasClicked() {
-        let image = stateOfBucket == .unpressed ? UIImage(systemName: "cart.fill") : UIImage(systemName: "cart")
-        toBucketButton.setImage(image, for: .normal)
-        stateOfBucket = stateOfBucket == .unpressed ? .pressed : .unpressed
-        
-        if let product = product,
-        let id = product.id {
-            product.isBucketInside = !product.isBucketInside
-            delegate?.change(product: [id: product])
+        guard
+            let product = product,
+            let id = product.id else {
+            return
         }
+        let image = !product.isBucketInside ?
+        UIImage(systemName: PublicConstants.SystemImages.cartFill) :
+        UIImage(systemName: PublicConstants.SystemImages.cart)
+        
+        toBucketButton.setImage(image, for: .normal)
+
+        product.isBucketInside = !product.isBucketInside
+        delegate?.change(product: [id: product])
     }
 }

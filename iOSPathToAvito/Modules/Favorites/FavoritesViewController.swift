@@ -1,7 +1,9 @@
 import UIKit
 
+// Protocol defining the interface for the FavoritesViewController
 public protocol FavoritesViewControllerProtocol: AnyObject {
     
+    /// Updates the table view with the given products
     func updateProductListTable(products: [UUID: Product])
 }
 

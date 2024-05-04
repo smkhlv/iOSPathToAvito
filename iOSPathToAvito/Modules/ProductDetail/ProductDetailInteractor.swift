@@ -1,13 +1,25 @@
 import Foundation
+
+// Protocol defining the input methods for Product Detail Interactor
 public protocol ProductDetailInteractorInput {
-    func updateProduct(_ product: Product)
-    func showProduct() 
     
+    /// Updates the current product with the provided product
+    /// - Parameter product: The product to be updated
+    func updateProduct(_ product: Product)
+    
+    /// Shows the current product
+    func showProduct()
+    
+    /// Toggles the favorite status of the current product
     func changeIsFavorite()
     
+    /// Toggles the bucket inside status of the current product
     func changeIsBucketInside()
+    
+    func removeSubjectFromObservers()
 }
 
+// Protocol defining the output method for Product Detail Interactor
 public protocol ProductDetailInteractorOutput: AnyObject {
     func showProduct(_ product: Product)
 }
@@ -41,10 +53,16 @@ final class ProductDetailInteractor: ProductDetailInteractorInput, ObserverInter
         subject?.updateProduct(currentProduct)
     }
     
+    public func removeSubjectFromObservers() {
+        subject?.observers.removeAll(where: { $0 is ProductDetailInteractor })
+    }
+    
     init(currentProduct: Product) {
         self.currentProduct = currentProduct
     }
 }
+
+// MARK: - ObserverInteractorOutput
 
 extension ProductDetailInteractor: ObserverInteractorOutput {
     func update(list: [UUID : Product]) { }
