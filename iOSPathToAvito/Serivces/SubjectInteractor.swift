@@ -31,7 +31,7 @@ public extension SubjectInteractorProtocol {
 public final class SubjectInteractor: SubjectInteractorProtocol {
 
     public var observers: [ObserverInteractor] = []
-    
+
     public func createProduct(_ product: Product) {
         observers.forEach { $0.createProduct(product) }
     }

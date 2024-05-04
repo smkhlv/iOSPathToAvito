@@ -101,7 +101,7 @@ final class ProductListInteractor: ProductListInteractorInput,
     }
 }
 
-// MARK: - ObserverInteractorOutput Extension
+// MARK: - ObserverInteractorOutput
 
 extension ProductListInteractor: ObserverInteractorOutput {
     func update(list: [UUID : Product]) {

@@ -59,11 +59,14 @@ final class ProductDetailInteractor: ProductDetailInteractorInput, ObserverInter
     
     init(currentProduct: Product) {
         self.currentProduct = currentProduct
+        products[currentProduct.id ?? UUID()] = currentProduct
     }
 }
 
 // MARK: - ObserverInteractorOutput
 
 extension ProductDetailInteractor: ObserverInteractorOutput {
-    func update(list: [UUID : Product]) { }
+    func update(list: [UUID : Product]) {
+        outputToPresenter?.showProduct(currentProduct)
+    }
 }

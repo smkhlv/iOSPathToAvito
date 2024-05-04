@@ -18,15 +18,15 @@ public final class ProductDetailViewController: UIViewController,
     private var stateOfBucket: StateButton = .unpressed
     
     private var imageOfBucketInside: UIImage? {
-       return stateOfFavorite == .pressed ?
-        UIImage(systemName: PublicConstants.SystemImages.heartFill) :
-        UIImage(systemName: PublicConstants.SystemImages.heart)
+       return stateOfBucket == .pressed ?
+        UIImage(systemName: PublicConstants.SystemImages.cartFill) :
+        UIImage(systemName: PublicConstants.SystemImages.cart)
     }
     
     private var imageOfFavorite: UIImage? {
-        return stateOfBucket == .pressed ?
-        UIImage(systemName: PublicConstants.SystemImages.cartFill) :
-        UIImage(systemName: PublicConstants.SystemImages.cart)
+        return stateOfFavorite == .pressed ?
+        UIImage(systemName: PublicConstants.SystemImages.heartFill) :
+        UIImage(systemName: PublicConstants.SystemImages.heart)
     }
     
     private lazy var toBucketButton: UIBarButtonItem = {
@@ -76,7 +76,7 @@ public final class ProductDetailViewController: UIViewController,
     // MARK: - Setup
     
     private func setupNavigationBarButtons() {
-       navigationItem.rightBarButtonItems = [toFavoritesButton, toBucketButton]
+       navigationItem.rightBarButtonItems = [toBucketButton, toFavoritesButton]
     }
     
     private func setupTable() {
