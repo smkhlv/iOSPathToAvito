@@ -115,13 +115,11 @@ public final class ProductDetailViewController: UIViewController,
     private func toggleFavoriteState() {
         stateOfFavorite = stateOfFavorite == .pressed ? .unpressed : .pressed
         toFavoritesButton.image = imageOfFavorite
-        presenter.changeIsFavorite()
     }
     
     private func toggleBucketState() {
         stateOfBucket = stateOfBucket == .pressed ? .unpressed : .pressed
         toBucketButton.image = imageOfBucketInside
-        presenter.changeIsBucketInside()
     }
     
     // MARK: - ProductDetailViewControllerProtocol
