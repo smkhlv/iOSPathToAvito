@@ -1,30 +1,33 @@
 import Foundation
 import UIKit
 
-// Protocol defining the input methods for the bucket list interactor
-protocol BucketListInteractorInput: AnyObject {
+/// Defining the input methods for the Favorites Interactor
+protocol FavoritesInteractorInput: AnyObject {
     
-    /// Method to handle changes in products
-    /// - Parameter product: The dictionary containing the product to be changed
+    /// Method to change the product
     func change(product: [UUID: Product])
 }
 
-// Protocol defining the output methods for the bucket list interactor
-protocol BucketListInteractorOutput: AnyObject {
+protocol FavoritesInteractorOutput: AnyObject {
+    
+    /// Method to notify about product fetching error
     func productFetchingError(title: String)
+    
     func products(list: [UUID: Product])
 }
 
-final class BucketListInteractor: BucketListInteractorInput, ObserverInteractor {    
+final class FavoritesInteractor: FavoritesInteractorInput, ObserverInteractor {
+    
     var id: String = UUID().uuidString
     
-    var products: [UUID : Product] = [:]
-    
     public weak var output: ObserverInteractorOutput?
-    public weak var outputToPresenter: BucketListInteractorOutput?
+    public weak var outputToPresenter: FavoritesInteractorOutput?
     public weak var subject: SubjectInteractorProtocol?
+    
     private let loader: LoaderProtocol
     private let dataManager: DataServiceProtocol
+    
+    var products: [UUID: Product] = [:]
     
     init(loader: LoaderProtocol, dataManager: DataServiceProtocol) {
         self.loader = loader
@@ -41,11 +44,11 @@ final class BucketListInteractor: BucketListInteractorInput, ObserverInteractor 
 
 // MARK: - ObserverInteractorOutput
 
-extension BucketListInteractor: ObserverInteractorOutput {
+extension FavoritesInteractor: ObserverInteractorOutput {
     func update(list: [UUID : Product]) {
         if let product = list.first {
             products[product.key] = product.value
-            products = products.filter { $0.value.isBucketInside }
+            products = products.filter { $0.value.isFavorite }
         }
         outputToPresenter?.products(list: products)
     }

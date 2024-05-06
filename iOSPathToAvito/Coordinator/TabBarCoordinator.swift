@@ -1,35 +1,49 @@
 import UIKit
 
+// Protocol defining the coordinator responsible for managing tab-based navigation
 protocol TabCoordinatorProtocol: Coordinator {
+    // Tab bar controller associated with the coordinator
     var tabBarController: UITabBarController { get set }
     
+    // Method to select a specific tab page
     func selectPage(_ page: TabBarPage)
     
+    // Method to set the selected index of the tab bar
     func setSelectedIndex(_ index: Int)
     
+    // Method to get the currently selected tab page
     func currentPage() -> TabBarPage?
 }
 
 final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
     
     weak var finishDelegate: CoordinatorFinishDelegate?
-        
+    
     var childCoordinators: [Coordinator] = []
-
+    
     var navigationController: UINavigationController
     
     var tabBarController: UITabBarController
-
+    
     var type: CoordinatorType { .tab }
     
     required init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
         self.tabBarController = .init()
     }
-
+    
     func start(view: UIViewController? = nil) {
         let pages: [TabBarPage] = [.productList, .favorites, .bucketList]
-        let controllers: [UINavigationController] = pages.map({ getTabController($0) })
+        
+        let loader: LoaderProtocol = Loader()
+        let dataManager: DataServiceProtocol = DataRequestService(coreDataAssembler: CoreDataAssembler())
+        let subjectInteractor: SubjectInteractorProtocol = SubjectInteractor()
+        
+        let controllers: [UINavigationController] = pages.map({ getTabController($0,
+                                                                                 loader: loader,
+                                                                                 dataManager: dataManager,
+                                                                                 subject: subjectInteractor)
+        })
         
         prepareTabBarController(withTabControllers: controllers)
     }
@@ -47,39 +61,55 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
         
         navigationController.viewControllers = [tabBarController]
     }
-      
-    private func getTabController(_ page: TabBarPage) -> UINavigationController {
+    
+    private func getTabController(_ page: TabBarPage,
+                                  loader: LoaderProtocol,
+                                  dataManager: DataServiceProtocol,
+                                  subject: SubjectInteractorProtocol) -> UINavigationController {
         let navController = UINavigationController()
         navController.setNavigationBarHidden(false, animated: false)
-
+        
         navController.tabBarItem = UITabBarItem.init(title: page.title,
                                                      image: page.image,
                                                      selectedImage: page.selectedImage)
         navController.tabBarItem.tag = page.pageIndex
-
+        
         switch page {
         case .productList:
-            let productListVC = ProductListViewController()
-            navController.pushViewController(productListVC, animated: true)
-        case .bucketList:
-//            let bucketListVC = ModuleFactory.build(with: .bucketList)
-//            navController.pushViewController(bucketListVC, animated: true)
+            let productListCoordinator = ProductListCoordinator(navController)
+            let build = ModuleFactory.buildProductList(coordinator: productListCoordinator,
+                                                       loader: loader,
+                                                       dataManager: dataManager,
+                                                       subject: subject)
             
-            let bucketListCoordinator = BucketListCoordinator.init(UINavigationController())
-            let build = ModuleFactory.buildBucketList(coordinator: bucketListCoordinator)
+            productListCoordinator.finishDelegate = self
+            productListCoordinator.start(view: build)
+            childCoordinators.append(productListCoordinator)
+        case .bucketList:
+            let bucketListCoordinator = BucketListCoordinator(navController)
+            let build = ModuleFactory.buildBucketList(coordinator: bucketListCoordinator,
+                                                      loader: loader,
+                                                      dataManager: dataManager,
+                                                      subject: subject)
             bucketListCoordinator.finishDelegate = self
             bucketListCoordinator.start(view: build)
             childCoordinators.append(bucketListCoordinator)
         case .favorites:
-            let favoritesVC = FavoritesViewController()
-            navController.pushViewController(favoritesVC, animated: true)
+            let favoritesCoordinator = FavoritesCoordinator(navController)
+            let build = ModuleFactory.buildFavorites(coordinator: favoritesCoordinator,
+                                                     loader: loader,
+                                                     dataManager: dataManager,
+                                                     subject: subject)
+            favoritesCoordinator.finishDelegate = self
+            favoritesCoordinator.start(view: build)
+            childCoordinators.append(favoritesCoordinator)
         }
         
         return navController
     }
     
     func currentPage() -> TabBarPage? { TabBarPage.init(index: tabBarController.selectedIndex) }
-
+    
     func selectPage(_ page: TabBarPage) {
         tabBarController.selectedIndex = page.pageIndex
     }
@@ -91,6 +121,8 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
     }
 }
 
+// MARK: - CoordinatorFinishDelegate
+
 extension TabCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) { }
 }
@@ -98,7 +130,5 @@ extension TabCoordinator: CoordinatorFinishDelegate {
 // MARK: - UITabBarControllerDelegate
 extension TabCoordinator: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController,
-                          didSelect viewController: UIViewController) {
-        // Some implementation
-    }
+                          didSelect viewController: UIViewController) { }
 }

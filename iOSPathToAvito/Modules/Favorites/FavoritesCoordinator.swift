@@ -1,23 +1,24 @@
 import UIKit
 
-// Protocol defining the methods a bucket list coordinator should implement
-protocol BucketListCoordinatorProtocol: AnyObject {
+/// Protocol defining the behavior of a Favorites Coordinator
+protocol FavoritesCoordinatorProtocol: AnyObject {
     
-    /// Method to present the detail view for a product
+    /// Method to show product detail
+    ///
     /// - Parameters:
     ///   - product: The product to show detail for
-    ///   - subject: The subject interactor for observing changes
+    ///   - subject: The subject interactor protocol, if applicable
     func showDetail(product: Product, subject: SubjectInteractorProtocol?)
 }
 
-final class BucketListCoordinator: BucketListCoordinatorProtocol, Coordinator {
+final class FavoritesCoordinator: FavoritesCoordinatorProtocol, Coordinator {
     weak var finishDelegate: CoordinatorFinishDelegate?
     
     var navigationController: UINavigationController
     
     var childCoordinators: [Coordinator] = []
     
-    var type: CoordinatorType { .bucket }
+    var type: CoordinatorType { .favorites }
     
     func start(view: UIViewController? = nil) {
         guard let view = view else { return }
@@ -37,6 +38,6 @@ final class BucketListCoordinator: BucketListCoordinatorProtocol, Coordinator {
 
 // MARK: - CoordinatorFinishDelegate
 
-extension BucketListCoordinator: CoordinatorFinishDelegate {
+extension FavoritesCoordinator: CoordinatorFinishDelegate {
     func coordinatorDidFinish(childCoordinator: Coordinator) { }
 }

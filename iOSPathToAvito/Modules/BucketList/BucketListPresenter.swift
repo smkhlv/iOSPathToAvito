@@ -1,26 +1,46 @@
-protocol BucketListPresenterProtocol: AnyObject {
-    func viewDidLoad(view: BucketListViewControllerProtocol)
-}
+import Foundation
 
+// Protocol defining the interface for the BucketListPresenter
+protocol BucketListPresenterProtocol: AnyObject { }
+
+
+// Presenter responsible for coordinating actions for the bucket list
 final class BucketListPresenter: BucketListPresenterProtocol {
     
-    private weak var view: BucketListViewControllerProtocol?
+    public weak var view: BucketListViewControllerProtocol?
+    public weak var subject: SubjectInteractorProtocol?
     private let coordinator: BucketListCoordinatorProtocol
     private let interactor: BucketListInteractorInput
     
     init(
-        view: BucketListViewControllerProtocol? = nil,
         coordinator: BucketListCoordinatorProtocol,
         interactor: BucketListInteractorInput
     ) {
-        self.view = view
         self.coordinator = coordinator
         self.interactor = interactor
     }
-    
-    func viewDidLoad(view: any BucketListViewControllerProtocol) { }
 }
 
+// MARK: - BucketListInteractorOutput
+
 extension BucketListPresenter: BucketListInteractorOutput {
+    func productFetchingError(title: String) {
+        print(title)
+    }
     
+    func products(list: [UUID: Product]) {
+        view?.updateProductListTable(products: list)
+    }
+}
+
+// MARK: - ProductCellDelegate
+
+extension BucketListPresenter: ProductCellDelegate {
+    func showDetail(product: Product) {
+        coordinator.showDetail(product: product, subject: subject)
+    }
+    
+    func change(product: [UUID: Product]) {
+        interactor.change(product: product)
+    }
 }
