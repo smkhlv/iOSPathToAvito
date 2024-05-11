@@ -2,71 +2,73 @@ import Foundation
 
 // Protocol defining the input methods for Product Detail Interactor
 public protocol ProductDetailInteractorInput {
+
+    func fetchProduct()
+
+    func getProduct(for action: ProductDetailIActionType)
     
-    /// Updates the current product with the provided product
-    /// - Parameter product: The product to be updated
-    func updateProduct(_ product: Product)
-    
-    /// Shows the current product
-    func showProduct()
-    
-    /// Toggles the favorite status of the current product
-    func changeIsFavorite()
-    
-    /// Toggles the bucket inside status of the current product
-    func changeIsBucketInside()
-    
-    func removeSubjectFromObservers()
+    func saveChanges()
 }
 
 // Protocol defining the output method for Product Detail Interactor
 public protocol ProductDetailInteractorOutput: AnyObject {
-    func showProduct(_ product: Product)
+    func reload(product: Product)
+    
+    func productFetchingError(title: String)
+    
+    func outputToggleIsFavorite(product: Product)
+    
+    func outputToggleIsBucketInside(product: Product)
+    
+    func outputProductWithoutRefetching(product: Product)
 }
 
-final class ProductDetailInteractor: ProductDetailInteractorInput, ObserverInteractor {
-    var id: String = UUID().uuidString
-
-    var products: [UUID : Product] = [:]
-    
-    public weak var subject: SubjectInteractorProtocol?
-    public weak var output: ObserverInteractorOutput?
-    public weak var outputToPresenter: ProductDetailInteractorOutput?
-    
-    private var currentProduct: Product
-    
-    public func showProduct() {
-        outputToPresenter?.showProduct(currentProduct)
-    }
-    
-    public func updateProduct(_ product: Product) {
-        currentProduct = product
-    }
-    
-    public func changeIsFavorite() {
-        currentProduct.isFavorite = !currentProduct.isFavorite
-        subject?.updateProduct(currentProduct)
-    }
-    
-    public func changeIsBucketInside() {
-        currentProduct.isBucketInside = !currentProduct.isBucketInside
-        subject?.updateProduct(currentProduct)
-    }
-    
-    public func removeSubjectFromObservers() {
-        subject?.observers.removeAll(where: { $0 is ProductDetailInteractor })
-    }
-    
-    init(currentProduct: Product) {
-        self.currentProduct = currentProduct
-        products[currentProduct.id ?? UUID()] = currentProduct
-    }
+public enum ProductDetailIActionType {
+    case toggleIsFavorite, toggleIsBucketInside, setupButtons
 }
 
-// MARK: - ObserverInteractorOutput
-
-extension ProductDetailInteractor: ObserverInteractorOutput {
-    func update(list: [UUID : Product]) {
-        outputToPresenter?.showProduct(currentProduct)
+final class ProductDetailInteractor: ProductDetailInteractorInput {
+    
+    private let repository: RepositoryProtocol
+    public weak var output: ProductDetailInteractorOutput?
+    
+    private var product: Product
+    
+    init(repository: RepositoryProtocol, product: Product) {
+        self.repository = repository
+        self.product = product
+    }
+    
+    public func saveChanges() {
+        repository.save()
+    }
+    
+    func getProduct(for action: ProductDetailIActionType) {
+        switch action {
+        case .toggleIsFavorite:
+            output?.outputToggleIsFavorite(product: product)
+            output?.outputProductWithoutRefetching(product: product)
+        case .toggleIsBucketInside:
+            output?.outputToggleIsBucketInside(product: product)
+            output?.outputProductWithoutRefetching(product: product)
+        case .setupButtons:
+            output?.outputProductWithoutRefetching(product: product)
+        }
+    }
+    
+    public func fetchProduct() {
+        guard let id = product.id else { return }
+        let predicate = NSPredicate.equalPredicate(key: "id", value: id)
+        
+        switch repository.fetchProducts(predicate: predicate,
+                                        fetchStrategy: .fromBD) {
+        case .success(let products):
+            if let product = products.first {
+                self.product = product
+            }
+            output?.reload(product: product)
+        case .failure(let error):
+            output?.productFetchingError(title: error.localizedDescription)
+        }
     }
 }

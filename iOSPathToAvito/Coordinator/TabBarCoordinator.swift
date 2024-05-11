@@ -25,24 +25,24 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
     
     var tabBarController: UITabBarController
     
+    private var repository: RepositoryProtocol?
+    
     var type: CoordinatorType { .tab }
     
-    required init(_ navigationController: UINavigationController) {
+    required init(_ navigationController: UINavigationController,
+                  repository: RepositoryProtocol?) {
+        self.repository = repository
         self.navigationController = navigationController
         self.tabBarController = .init()
     }
     
     func start(view: UIViewController? = nil) {
+        guard let repository = repository else { return }
         let pages: [TabBarPage] = [.productList, .favorites, .bucketList]
         
-        let loader: LoaderProtocol = Loader()
-        let dataManager: DataServiceProtocol = DataRequestService(coreDataAssembler: CoreDataAssembler())
-        let subjectInteractor: SubjectInteractorProtocol = SubjectInteractor()
         
         let controllers: [UINavigationController] = pages.map({ getTabController($0,
-                                                                                 loader: loader,
-                                                                                 dataManager: dataManager,
-                                                                                 subject: subjectInteractor)
+                                                                                 repository: repository)
         })
         
         prepareTabBarController(withTabControllers: controllers)
@@ -63,9 +63,7 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
     }
     
     private func getTabController(_ page: TabBarPage,
-                                  loader: LoaderProtocol,
-                                  dataManager: DataServiceProtocol,
-                                  subject: SubjectInteractorProtocol) -> UINavigationController {
+                                  repository: RepositoryProtocol) -> UINavigationController {
         let navController = UINavigationController()
         navController.setNavigationBarHidden(false, animated: false)
         
@@ -76,30 +74,27 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
         
         switch page {
         case .productList:
-            let productListCoordinator = ProductListCoordinator(navController)
+            let productListCoordinator = ProductListCoordinator(navController,
+                                                                repository: repository)
             let build = ModuleFactory.buildProductList(coordinator: productListCoordinator,
-                                                       loader: loader,
-                                                       dataManager: dataManager,
-                                                       subject: subject)
+                                                       repository: repository)
             
             productListCoordinator.finishDelegate = self
             productListCoordinator.start(view: build)
             childCoordinators.append(productListCoordinator)
         case .bucketList:
-            let bucketListCoordinator = BucketListCoordinator(navController)
+            let bucketListCoordinator = BucketListCoordinator(navController,
+                                                              repository: repository)
             let build = ModuleFactory.buildBucketList(coordinator: bucketListCoordinator,
-                                                      loader: loader,
-                                                      dataManager: dataManager,
-                                                      subject: subject)
+                                                      repository: repository)
             bucketListCoordinator.finishDelegate = self
             bucketListCoordinator.start(view: build)
             childCoordinators.append(bucketListCoordinator)
         case .favorites:
-            let favoritesCoordinator = FavoritesCoordinator(navController)
+            let favoritesCoordinator = FavoritesCoordinator(navController, 
+                                                            repository: repository)
             let build = ModuleFactory.buildFavorites(coordinator: favoritesCoordinator,
-                                                     loader: loader,
-                                                     dataManager: dataManager,
-                                                     subject: subject)
+                                                     repository: repository)
             favoritesCoordinator.finishDelegate = self
             favoritesCoordinator.start(view: build)
             childCoordinators.append(favoritesCoordinator)

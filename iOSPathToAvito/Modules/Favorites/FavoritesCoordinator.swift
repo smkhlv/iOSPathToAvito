@@ -7,8 +7,7 @@ protocol FavoritesCoordinatorProtocol: AnyObject {
     ///
     /// - Parameters:
     ///   - product: The product to show detail for
-    ///   - subject: The subject interactor protocol, if applicable
-    func showDetail(product: Product, subject: SubjectInteractorProtocol?)
+    func showDetail(product: Product)
 }
 
 final class FavoritesCoordinator: FavoritesCoordinatorProtocol, Coordinator {
@@ -18,6 +17,8 @@ final class FavoritesCoordinator: FavoritesCoordinatorProtocol, Coordinator {
     
     var childCoordinators: [Coordinator] = []
     
+    private var repository: RepositoryProtocol?
+    
     var type: CoordinatorType { .favorites }
     
     func start(view: UIViewController? = nil) {
@@ -25,13 +26,16 @@ final class FavoritesCoordinator: FavoritesCoordinatorProtocol, Coordinator {
         navigationController.pushViewController(view, animated: true)
     }
     
-    func showDetail(product: Product, subject: SubjectInteractorProtocol?) {
+    func showDetail(product: Product) {
+        guard let repository = repository else { return }
         let detail = ModuleFactory.buildProductDetail(product: product,
-                                                      subject: subject)
+                                                      repository: repository)
         navigationController.pushViewController(detail, animated: true)
     }
     
-    required init(_ navigationController: UINavigationController) {
+    required init(_ navigationController: UINavigationController,
+                  repository: RepositoryProtocol?) {
+        self.repository = repository
         self.navigationController = navigationController
     }
 }

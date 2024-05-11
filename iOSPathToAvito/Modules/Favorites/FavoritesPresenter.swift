@@ -1,12 +1,13 @@
 import Foundation
 
 // Protocol defining the interface for FavoritesPresenter interactions
-protocol FavoritesPresenterProtocol: AnyObject { }
+protocol FavoritesPresenterProtocol: AnyObject { 
+    func fetchProducts()
+}
 
 final class FavoritesPresenter: FavoritesPresenterProtocol {
     
     public weak var view: FavoritesViewControllerProtocol?
-    public weak var subject: SubjectInteractorProtocol?
     private let coordinator: FavoritesCoordinatorProtocol
     private let interactor: FavoritesInteractorInput
     
@@ -17,17 +18,29 @@ final class FavoritesPresenter: FavoritesPresenterProtocol {
         self.coordinator = coordinator
         self.interactor = interactor
     }
+    
+    public func fetchProducts() {
+        interactor.fetchProducts()
+    }
 }
 
 // MARK: - FavoritesInteractorOutput
 
 extension FavoritesPresenter: FavoritesInteractorOutput {
-    func productFetchingError(title: String) {
-        print(title)
+    func append(products: [Product]) {
+        view?.append(products: products)
     }
     
-    func products(list: [UUID : Product]) {
-        view?.updateProductListTable(products: list)
+    func reload(products: [Product]) {
+        view?.reload(products: products)
+    }
+    
+    func delete(products: [Product]) {
+        view?.delete(products: products)
+    }
+    
+    func productFetchingError(title: String) {
+        print(title)
     }
 }
 
@@ -35,11 +48,19 @@ extension FavoritesPresenter: FavoritesInteractorOutput {
 
 extension FavoritesPresenter: ProductCellDelegate {
     
-    func showDetail(product: Product) {
-        coordinator.showDetail(product: product, subject: subject)
+    func toggleIsFavorite(product: Product) {
+        product.isFavorite = !product.isFavorite
+        interactor.saveChanges()
+        interactor.fetchProducts()
     }
     
-    func change(product: [UUID: Product]) {
-        interactor.change(product: product)
+    func toggleIsBucketInside(product: Product) {
+        product.isBucketInside = !product.isBucketInside
+        interactor.saveChanges()
+        interactor.fetchProducts()
+    }
+
+    func showDetail(product: Product) {
+        coordinator.showDetail(product: product)
     }
 }

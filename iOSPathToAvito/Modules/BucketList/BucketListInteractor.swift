@@ -4,49 +4,64 @@ import UIKit
 // Protocol defining the input methods for the bucket list interactor
 protocol BucketListInteractorInput: AnyObject {
     
-    /// Method to handle changes in products
-    /// - Parameter product: The dictionary containing the product to be changed
-    func change(product: [UUID: Product])
+    func saveChanges()
+    
+    func fetchProducts()
 }
 
 // Protocol defining the output methods for the bucket list interactor
 protocol BucketListInteractorOutput: AnyObject {
     func productFetchingError(title: String)
-    func products(list: [UUID: Product])
+    func append(products: [Product])
+    
+    func reload(products: [Product])
+    
+    func delete(products: [Product])
 }
 
-final class BucketListInteractor: BucketListInteractorInput, ObserverInteractor {    
-    var id: String = UUID().uuidString
+final class BucketListInteractor: BucketListInteractorInput {
+
+    public weak var output: BucketListInteractorOutput?
+    private let repository: RepositoryProtocol
     
-    var products: [UUID : Product] = [:]
+    private var products: [Product] = []
     
-    public weak var output: ObserverInteractorOutput?
-    public weak var outputToPresenter: BucketListInteractorOutput?
-    public weak var subject: SubjectInteractorProtocol?
-    private let loader: LoaderProtocol
-    private let dataManager: DataServiceProtocol
-    
-    init(loader: LoaderProtocol, dataManager: DataServiceProtocol) {
-        self.loader = loader
-        self.dataManager = dataManager
+    init(repository: RepositoryProtocol) {
+        self.repository = repository
     }
     
-    public func change(product: [UUID: Product]) {
-        if let product = product.first {
-            products[product.key] = product.value
-            subject?.updateProduct(product.value)
-        }
+    public func saveChanges() {
+        repository.save()
     }
-}
-
-// MARK: - ObserverInteractorOutput
-
-extension BucketListInteractor: ObserverInteractorOutput {
-    func update(list: [UUID : Product]) {
-        if let product = list.first {
-            products[product.key] = product.value
-            products = products.filter { $0.value.isBucketInside }
+    
+    func fetchProducts() {
+        let predicate = NSPredicate.equalPredicate(key: "_isBucketInside", value: 1)
+        
+        switch repository.fetchProducts(predicate: predicate,
+                                        fetchStrategy: .fromBD) {
+        case .success(let products):
+            if self.products.isEmpty {
+                output?.append(products: products)
+                self.products = products
+                return
+            }
+            if self.products.count != products.count {
+                if self.products.count > products.count {
+                    output?.delete(products: self.products.difference(from: products))
+                } else {
+                    output?.append(products: self.products.difference(from: products))
+                }
+                self.products = products
+                return
+            }
+            if self.products.hasChanges(with: products) {
+                output?.reload(products: products)
+                self.products = products
+                return
+            }
+            self.products = products
+        case .failure(let error):
+            output?.productFetchingError(title: error.localizedDescription)
         }
-        outputToPresenter?.products(list: products)
     }
 }

@@ -1,13 +1,13 @@
 import UIKit
 
 // Handler for managing the table view in Product Detail screen
-public class ProductDetailTableHandler: NSObject {
+public class ProductDetailDataSource: NSObject {
     var currentProduct: Product?
 }
 
 // MARK: - UITableViewDataSource
 
-extension ProductDetailTableHandler: UITableViewDataSource {
+extension ProductDetailDataSource: UITableViewDataSource {
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 3
     }

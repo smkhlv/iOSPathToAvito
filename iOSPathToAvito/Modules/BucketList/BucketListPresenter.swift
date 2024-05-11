@@ -1,14 +1,14 @@
 import Foundation
 
 // Protocol defining the interface for the BucketListPresenter
-protocol BucketListPresenterProtocol: AnyObject { }
-
+protocol BucketListPresenterProtocol: AnyObject {
+    func fetchProducts()
+}
 
 // Presenter responsible for coordinating actions for the bucket list
 final class BucketListPresenter: BucketListPresenterProtocol {
     
     public weak var view: BucketListViewControllerProtocol?
-    public weak var subject: SubjectInteractorProtocol?
     private let coordinator: BucketListCoordinatorProtocol
     private let interactor: BucketListInteractorInput
     
@@ -19,6 +19,10 @@ final class BucketListPresenter: BucketListPresenterProtocol {
         self.coordinator = coordinator
         self.interactor = interactor
     }
+    
+    public func fetchProducts() {
+        interactor.fetchProducts()
+    }
 }
 
 // MARK: - BucketListInteractorOutput
@@ -28,19 +32,36 @@ extension BucketListPresenter: BucketListInteractorOutput {
         print(title)
     }
     
-    func products(list: [UUID: Product]) {
-        view?.updateProductListTable(products: list)
+    func append(products: [Product]) {
+        view?.append(products: products)
+    }
+    
+    func reload(products: [Product]) {
+        view?.reload(products: products)
+    }
+    
+    func delete(products: [Product]) {
+        view?.delete(products: products)
     }
 }
 
 // MARK: - ProductCellDelegate
 
 extension BucketListPresenter: ProductCellDelegate {
-    func showDetail(product: Product) {
-        coordinator.showDetail(product: product, subject: subject)
+    
+    func toggleIsFavorite(product: Product) {
+        product.isFavorite = !product.isFavorite
+        interactor.saveChanges()
+        interactor.fetchProducts() 
     }
     
-    func change(product: [UUID: Product]) {
-        interactor.change(product: product)
+    func toggleIsBucketInside(product: Product) {
+        product.isBucketInside = !product.isBucketInside
+        interactor.saveChanges()
+        interactor.fetchProducts()
+    }
+
+    func showDetail(product: Product) {
+        coordinator.showDetail(product: product)
     }
 }

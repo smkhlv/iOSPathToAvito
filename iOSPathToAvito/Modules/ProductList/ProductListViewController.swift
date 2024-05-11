@@ -2,10 +2,12 @@ import UIKit
 
 // Protocol defining the interface for the Product List View Controller
 public protocol ProductListViewControllerProtocol: AnyObject {
+
+    func append(products: [Product])
     
-    /// Updates the product list table with the provided products
-    /// - Parameter products: The dictionary of products with UUID as keys
-    func updateProductListTable(products: [UUID: Product])
+    func reload(products: [Product])
+    
+    func delete(products: [Product])
 }
 
 public final class ProductListViewController: UIViewController, 
@@ -15,12 +17,12 @@ public final class ProductListViewController: UIViewController,
     
     private weak var tableView: UITableView?
     
-    private var tableHandler: ProductListTableHandler
+    private var tableDataSource: ProductListDataSource
     
     init(presenter: ProductListPresenterProtocol,
-         tableHandler: ProductListTableHandler) {
+         tableDataSource: ProductListDataSource) {
         self.presenter = presenter
-        self.tableHandler = tableHandler
+        self.tableDataSource = tableDataSource
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -40,17 +42,25 @@ public final class ProductListViewController: UIViewController,
         presenter.fetchProducts()
     }
     
-    public func updateProductListTable(products: [UUID: Product]) {
-        tableHandler.products = products
-        tableView?.reloadData()
+    public func append(products: [Product]) {
+        tableDataSource.appendItems(products: products)
+    }
+    
+    public func reload(products: [Product]) {
+        tableDataSource.reloadItems(products: products)
+    }
+    
+    public func delete(products: [Product]) {
+        tableDataSource.deleteItems(products: products)
     }
     
     private func setupTable() {
         
         let table = UITableView()
         tableView = table
-        table.dataSource = tableHandler
-        table.delegate = tableHandler
+        tableDataSource.setupDataSource(table: table)
+        table.delegate = tableDataSource
+        table.rowHeight = PublicConstants.Table.defaultCellHeight
         table.register(ProductCell.self,
                        forCellReuseIdentifier: String(describing: ProductCell.self))
         

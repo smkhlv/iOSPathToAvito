@@ -4,8 +4,9 @@ import UIKit
 /// Defining the input methods for the Favorites Interactor
 protocol FavoritesInteractorInput: AnyObject {
     
-    /// Method to change the product
-    func change(product: [UUID: Product])
+    func saveChanges()
+    
+    func fetchProducts()
 }
 
 protocol FavoritesInteractorOutput: AnyObject {
@@ -13,43 +14,58 @@ protocol FavoritesInteractorOutput: AnyObject {
     /// Method to notify about product fetching error
     func productFetchingError(title: String)
     
-    func products(list: [UUID: Product])
+    func append(products: [Product])
+    
+    func reload(products: [Product])
+    
+    func delete(products: [Product])
 }
 
-final class FavoritesInteractor: FavoritesInteractorInput, ObserverInteractor {
+final class FavoritesInteractor: FavoritesInteractorInput {
+
+    public weak var output: FavoritesInteractorOutput?
+    private let repository: RepositoryProtocol
     
-    var id: String = UUID().uuidString
+    private var products: [Product] = []
     
-    public weak var output: ObserverInteractorOutput?
-    public weak var outputToPresenter: FavoritesInteractorOutput?
-    public weak var subject: SubjectInteractorProtocol?
-    
-    private let loader: LoaderProtocol
-    private let dataManager: DataServiceProtocol
-    
-    var products: [UUID: Product] = [:]
-    
-    init(loader: LoaderProtocol, dataManager: DataServiceProtocol) {
-        self.loader = loader
-        self.dataManager = dataManager
+    init(repository: RepositoryProtocol) {
+        self.repository = repository
     }
     
-    public func change(product: [UUID: Product]) {
-        if let product = product.first {
-            products[product.key] = product.value
-            subject?.updateProduct(product.value)
-        }
+    public func saveChanges() {
+        repository.save()
     }
-}
+    
+    func fetchProducts() {
+        let predicate = NSPredicate.equalPredicate(key: "_isFavorite", value: 1)
+        
+        switch repository.fetchProducts(predicate: predicate, 
+                                        fetchStrategy: .fromBD) {
+        case .success(let products):
+            
+            if self.products.isEmpty {
+                output?.append(products: products)
+                self.products = products
+                return
+            }
+            if self.products.count != products.count {
+                if self.products.count > products.count {
+                    output?.delete(products: self.products.difference(from: products))
+                } else {
+                    output?.append(products: self.products.difference(from: products))
+                }
+                self.products = products
+                return
+            }
+            if self.products.hasChanges(with: products) {
+                output?.reload(products: products)
+                self.products = products
+                return
+            }
 
-// MARK: - ObserverInteractorOutput
-
-extension FavoritesInteractor: ObserverInteractorOutput {
-    func update(list: [UUID : Product]) {
-        if let product = list.first {
-            products[product.key] = product.value
-            products = products.filter { $0.value.isFavorite }
+            self.products = products
+        case .failure(let error):
+            output?.productFetchingError(title: error.localizedDescription)
         }
-        outputToPresenter?.products(list: products)
     }
 }

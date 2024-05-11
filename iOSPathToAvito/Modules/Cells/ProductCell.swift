@@ -2,8 +2,10 @@ import UIKit
 
 // Delegate protocol for interacting with ProductCell actions
 public protocol ProductCellDelegate: AnyObject {
-    // Method called when the favorite or bucket state of a product changes
-    func change(product: [UUID: Product])
+
+    func toggleIsFavorite(product: Product)
+    
+    func toggleIsBucketInside(product: Product)
     
     // Method called when a product detail is requested
     func showDetail(product: Product)
@@ -68,7 +70,6 @@ public class ProductCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
         setupCell()
     }
     
@@ -119,9 +120,7 @@ public class ProductCell: UITableViewCell {
         UIImage(systemName: PublicConstants.SystemImages.heart)
         
         toFavoritesButton.setImage(image, for: .normal)
-        
-        product.isFavorite = !product.isFavorite
-        delegate?.change(product: [id: product])
+        delegate?.toggleIsFavorite(product: product)
     }
     
     @objc private func toBucketWasClicked() {
@@ -135,8 +134,6 @@ public class ProductCell: UITableViewCell {
         UIImage(systemName: PublicConstants.SystemImages.cart)
         
         toBucketButton.setImage(image, for: .normal)
-
-        product.isBucketInside = !product.isBucketInside
-        delegate?.change(product: [id: product])
+        delegate?.toggleIsBucketInside(product: product)
     }
 }

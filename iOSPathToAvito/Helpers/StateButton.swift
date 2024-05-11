@@ -1,3 +1,3 @@
-enum StateButton {
+public enum StateButton {
     case pressed, unpressed
 }
