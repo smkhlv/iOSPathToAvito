@@ -3,20 +3,19 @@ import Foundation
 // Protocol for Product Detail Presenter interactions
 public protocol ProductDetailPresenterProtocol: AnyObject {
     
-    /// Updates the product in the presenter
-    /// - Parameter product: The product to update
-    func updateProduct(_ product: Product)
-    
     /// Displays the current product
     func showProduct()
     
-    /// Changes the favorite status of the current product
-    func changeIsFavorite()
+    func toggleIsFavorite()
     
-    /// Changes the bucket inside status of the current product
-    func changeIsBucketInside()
+    func toggleIsBucketInside()
     
-    func removeSubjectFromObservers()
+    var stateOfFavorite: StateButton { get }
+    
+    var stateOfBucket: StateButton { get }
+    
+    func setupStateButtons()
+    
 }
 
 public final class ProductDetailPresenter: ProductDetailPresenterProtocol {
@@ -24,36 +23,55 @@ public final class ProductDetailPresenter: ProductDetailPresenterProtocol {
     
     private let interactor: ProductDetailInteractorInput
     
+    public var stateOfFavorite: StateButton = .unpressed
+    public var stateOfBucket: StateButton = .unpressed
+
     init(interactor: ProductDetailInteractorInput) {
         self.interactor = interactor
     }
     
-    public func updateProduct(_ product: Product) {
-        interactor.updateProduct(product)
+    public func toggleIsFavorite() {
+        interactor.getProduct(for: .toggleIsFavorite)
+    }
+    
+    public func toggleIsBucketInside() {
+        interactor.getProduct(for: .toggleIsBucketInside)
     }
     
     public func showProduct() {
-        interactor.showProduct()
+        interactor.fetchProduct()
     }
     
-    public func changeIsFavorite() {
-        interactor.changeIsFavorite()
-    }
-    
-    public func changeIsBucketInside() {
-        interactor.changeIsBucketInside()
-    }
-    
-    public func removeSubjectFromObservers() {
-        interactor.removeSubjectFromObservers()
+    public func setupStateButtons() {
+        interactor.getProduct(for: .setupButtons)
     }
 }
 
 // MARK: - ProductDetailInteractorOutput
-
+//
 extension ProductDetailPresenter: ProductDetailInteractorOutput {
-    public func showProduct(_ product: Product) {
+    public func outputProductWithoutRefetching(product: Product) {
+        stateOfBucket = product.isBucketInside ? .pressed : .unpressed
+        stateOfFavorite = product.isFavorite ? .pressed : .unpressed
+    }
+    
+    public func outputToggleIsFavorite(product: Product) {
+        product.isFavorite = !product.isFavorite
+        interactor.saveChanges()
+    }
+    
+    public func outputToggleIsBucketInside(product: Product) {
+        product.isBucketInside = !product.isBucketInside
+        interactor.saveChanges()
+    }
+    
+   
+    public func reload(product: Product) {
         view?.updateDetail(product)
+    }
+    
+    public func productFetchingError(title: String) {
+        print(title)
     }
 }
 

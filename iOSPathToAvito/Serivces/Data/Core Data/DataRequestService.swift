@@ -9,7 +9,7 @@ public protocol DataServiceProtocol {
     func create<T: NSManagedObject>(_ type: T.Type) -> T?
     
     // Method to fetch managed objects of a given type
-    func fetch<T: NSManagedObject>(_ type: T.Type) -> [T]
+    func fetch<T: NSManagedObject>(_ type: T.Type, predicate: NSPredicate?) -> [T]
 }
 
 public class DataRequestService: DataServiceProtocol {
@@ -40,9 +40,13 @@ public class DataRequestService: DataServiceProtocol {
         return object as? T
     }
     
-    public func fetch<T: NSManagedObject>(_ type: T.Type) -> [T] {
+    public func fetch<T: NSManagedObject>(
+        _ type: T.Type,
+        predicate: NSPredicate? = nil
+    ) -> [T] {
         do {
             let fetchRequest = NSFetchRequest<T>(entityName: String(describing: type))
+            fetchRequest.predicate = predicate
             let fetchItem = try coreDataAssembler.context?.fetch(fetchRequest)
             return fetchItem ?? []
         } catch {

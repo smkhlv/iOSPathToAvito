@@ -3,23 +3,25 @@ import UIKit
 // Protocol defining the interface for the FavoritesViewController
 public protocol FavoritesViewControllerProtocol: AnyObject {
     
-    /// Updates the table view with the given products
-    func updateProductListTable(products: [UUID: Product])
+    func append(products: [Product])
+    
+    func reload(products: [Product])
+    
+    func delete(products: [Product])
 }
 
-public final class FavoritesViewController: UIViewController,
-                                            FavoritesViewControllerProtocol {
+public final class FavoritesViewController: UIViewController {
     
     private let presenter: FavoritesPresenterProtocol
     
     private weak var tableView: UITableView?
     
-    private var tableHandler: ProductListTableHandler
+    private var tableDataSource: ProductListDataSource
     
     init(presenter: FavoritesPresenterProtocol,
-         tableHandler: ProductListTableHandler) {
+         tableDataSource: ProductListDataSource) {
         self.presenter = presenter
-        self.tableHandler = tableHandler
+        self.tableDataSource = tableDataSource
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -34,17 +36,18 @@ public final class FavoritesViewController: UIViewController,
         setupTable()
     }
     
-    public func updateProductListTable(products: [UUID: Product]) {
-        tableHandler.products = products
-        tableView?.reloadData()
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        presenter.fetchProducts()
     }
     
     private func setupTable() {
         
         let table = UITableView()
         tableView = table
-        table.dataSource = tableHandler
-        table.delegate = tableHandler
+        tableDataSource.setupDataSource(table: table)
+        table.rowHeight = PublicConstants.Table.defaultCellHeight
+        table.delegate = tableDataSource
         table.register(ProductCell.self,
                        forCellReuseIdentifier: String(describing: ProductCell.self))
         
@@ -57,5 +60,20 @@ public final class FavoritesViewController: UIViewController,
             table.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor),
             table.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor)
         ])
+    }
+}
+
+extension FavoritesViewController: FavoritesViewControllerProtocol {
+    
+    public func append(products: [Product]) {
+        tableDataSource.appendItems(products: products)
+    }
+    
+    public func reload(products: [Product]) {
+        tableDataSource.reloadItems(products: products)
+    }
+    
+    public func delete(products: [Product]) {
+        tableDataSource.deleteItems(products: products)
     }
 }

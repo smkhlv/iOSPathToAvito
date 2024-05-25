@@ -2,7 +2,7 @@ import UIKit
 
 // Protocol for ProductDetailViewController interactions
 public protocol ProductDetailViewControllerProtocol: AnyObject {
-    func updateDetail(_ product: Product)
+    func updateDetail(_ product: Product?)
 }
 
 public final class ProductDetailViewController: UIViewController,
@@ -12,19 +12,16 @@ public final class ProductDetailViewController: UIViewController,
     
     private weak var tableView: UITableView?
     
-    private var tableHandler: ProductDetailTableHandler
-
-    private var stateOfFavorite: StateButton = .unpressed
-    private var stateOfBucket: StateButton = .unpressed
+    private var tableDataSource: ProductDetailDataSource
     
     private var imageOfBucketInside: UIImage? {
-       return stateOfBucket == .pressed ?
+        return presenter.stateOfBucket == .pressed ?
         UIImage(systemName: PublicConstants.SystemImages.cartFill) :
         UIImage(systemName: PublicConstants.SystemImages.cart)
     }
     
     private var imageOfFavorite: UIImage? {
-        return stateOfFavorite == .pressed ?
+        return presenter.stateOfFavorite == .pressed ?
         UIImage(systemName: PublicConstants.SystemImages.heartFill) :
         UIImage(systemName: PublicConstants.SystemImages.heart)
     }
@@ -47,14 +44,10 @@ public final class ProductDetailViewController: UIViewController,
     
     init(
         presenter: ProductDetailPresenterProtocol,
-        tableHandler: ProductDetailTableHandler,
-        stateOfFavorite: StateButton,
-        stateOfBucket: StateButton
+        tableDataSource: ProductDetailDataSource
     ) {
         self.presenter = presenter
-        self.tableHandler = tableHandler
-        self.stateOfFavorite = stateOfFavorite
-        self.stateOfBucket = stateOfBucket
+        self.tableDataSource = tableDataSource
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -65,12 +58,18 @@ public final class ProductDetailViewController: UIViewController,
         super.viewDidLoad()
         setupNavigationBarButtons()
         setupTable()
-        presenter.showProduct()
     }
     
-    public override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        presenter.removeSubjectFromObservers()
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        presenter.setupStateButtons()
+        presenter.showProduct()
+        reloadButtons()
+    }
+    
+    private func reloadButtons() {
+        toFavoritesButton.image = imageOfFavorite
+        toBucketButton.image = imageOfBucketInside
     }
 
     // MARK: - Setup
@@ -83,7 +82,8 @@ public final class ProductDetailViewController: UIViewController,
         
         let table = UITableView()
         tableView = table
-        table.dataSource = tableHandler
+        table.dataSource = tableDataSource
+        table.rowHeight = PublicConstants.Table.defaultCellHeight
         table.register(ProductCellDetail.self,
                        forCellReuseIdentifier: String(describing: ProductCellDetail.self))
         
@@ -102,30 +102,28 @@ public final class ProductDetailViewController: UIViewController,
     
     @objc private func toFavoritesWasClicked() {
         toggleFavoriteState()
-        presenter.changeIsFavorite()
     }
     
     @objc private func toBucketWasClicked() {
         toggleBucketState()
-        presenter.changeIsBucketInside()
     }
     
     // MARK: - Helper
     
     private func toggleFavoriteState() {
-        stateOfFavorite = stateOfFavorite == .pressed ? .unpressed : .pressed
+        presenter.toggleIsFavorite()
         toFavoritesButton.image = imageOfFavorite
     }
     
     private func toggleBucketState() {
-        stateOfBucket = stateOfBucket == .pressed ? .unpressed : .pressed
+        presenter.toggleIsBucketInside()
         toBucketButton.image = imageOfBucketInside
     }
     
     // MARK: - ProductDetailViewControllerProtocol
     
-    public func updateDetail(_ product: Product) {
-        tableHandler.currentProduct = product
+    public func updateDetail(_ product: Product?) {
+        tableDataSource.currentProduct = product
         tableView?.reloadData()
     }
     

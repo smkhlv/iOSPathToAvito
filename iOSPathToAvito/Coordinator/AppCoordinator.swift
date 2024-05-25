@@ -13,11 +13,14 @@ class AppCoordinator: AppCoordinatorProtocol {
     
     var childCoordinators = [Coordinator]()
     
+    private var repository: RepositoryProtocol?
+    
     var type: CoordinatorType { .app }
         
-    required init(_ navigationController: UINavigationController) {
+    required init(_ navigationController: UINavigationController,
+                  repository: RepositoryProtocol?) {
+        self.repository = repository
         self.navigationController = navigationController
-        navigationController.setNavigationBarHidden(true, animated: true)
     }
 
     func start(view: UIViewController? = nil) {
@@ -25,7 +28,8 @@ class AppCoordinator: AppCoordinatorProtocol {
     }
 
     func showMainFlow() {
-        let tabCoordinator = TabCoordinator.init(navigationController)
+        let tabCoordinator = TabCoordinator.init(navigationController,
+                                                 repository: repository)
         tabCoordinator.finishDelegate = self
         tabCoordinator.start()
         childCoordinators.append(tabCoordinator)

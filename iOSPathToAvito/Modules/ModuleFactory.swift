@@ -6,95 +6,71 @@ struct ModuleFactory {
     // Builds the Bucket List module
     static func buildBucketList(
         coordinator: BucketListCoordinatorProtocol,
-        loader: LoaderProtocol,
-        dataManager: DataServiceProtocol,
-        subject: SubjectInteractorProtocol
+        repository: RepositoryProtocol
     ) -> UIViewController {
         
-        let interactor = BucketListInteractor(loader: loader, dataManager: dataManager)
+        let interactor = BucketListInteractor(repository: repository)
         let presenter = BucketListPresenter(coordinator: coordinator, interactor: interactor)
-        let tableHandler = ProductListTableHandler()
+        let tableDataSource = ProductListDataSource()
         let view = BucketListViewController(presenter: presenter,
-                                            tableHandler: tableHandler)
-        subject.add(interactor)
-        interactor.subject = subject
-        presenter.subject = subject
+                                            tableDataSource: tableDataSource)
+
         presenter.view = view
-        interactor.output = interactor
-        interactor.outputToPresenter = presenter
-        tableHandler.delegate = presenter
+        interactor.output = presenter
+        tableDataSource.delegate = presenter
         return view
     }
     
     // Builds the Product List module
     static func buildProductList(
         coordinator: ProductListCoordinatorProtocol,
-        loader: LoaderProtocol,
-        dataManager: DataServiceProtocol,
-        subject: SubjectInteractorProtocol
+        repository: RepositoryProtocol
     ) -> UIViewController {
         
-        let interactor = ProductListInteractor(loader: loader, dataManager: dataManager)
+        let interactor = ProductListInteractor(repository: repository)
         let presenter = ProductListPresenter(coordinator: coordinator, interactor: interactor)
-        let tableHandler = ProductListTableHandler()
-        let view = ProductListViewController(presenter: presenter, tableHandler: tableHandler)
-        
-        subject.add(interactor)
-        interactor.subject = subject
-        presenter.subject = subject
+        let tableDataSource = ProductListDataSource()
+        let view = ProductListViewController(presenter: presenter, tableDataSource: tableDataSource)
+
         presenter.view = view
-        interactor.output = interactor
-        interactor.outputToPresenter = presenter
-        tableHandler.delegate = presenter
+        interactor.output = presenter
+        tableDataSource.delegate = presenter
         return view
     }
     
     // Builds the Favorites module
     static func buildFavorites(
         coordinator: FavoritesCoordinatorProtocol,
-        loader: LoaderProtocol,
-        dataManager: DataServiceProtocol,
-        subject: SubjectInteractorProtocol
+        repository: RepositoryProtocol
     ) -> UIViewController {
         
-        let interactor = FavoritesInteractor(loader: loader, dataManager: dataManager)
+        let interactor = FavoritesInteractor(repository: repository)
         let presenter = FavoritesPresenter(coordinator: coordinator, interactor: interactor)
-        let tableHandler = ProductListTableHandler()
-        let view = FavoritesViewController(presenter: presenter, tableHandler: tableHandler)
+        let tableDataSource = ProductListDataSource()
+        let view = FavoritesViewController(presenter: presenter, tableDataSource: tableDataSource)
         
-        subject.add(interactor)
-        interactor.subject = subject
-        presenter.subject = subject
         presenter.view = view
-        interactor.output = interactor
-        interactor.outputToPresenter = presenter
-        tableHandler.delegate = presenter
+        interactor.output = presenter
+        tableDataSource.delegate = presenter
         return view
     }
     
     // Builds the Product Detail module
     static func buildProductDetail(
         product: Product,
-        subject: SubjectInteractorProtocol?
+        repository: RepositoryProtocol
     ) -> UIViewController {
         
-        let interactor = ProductDetailInteractor(currentProduct: product)
+        let interactor = ProductDetailInteractor(repository: repository,
+                                                 product: product)
         let presenter = ProductDetailPresenter(interactor: interactor)
-        let tableHandler = ProductDetailTableHandler()
-        
-        let stateOfFavorite: StateButton = product.isFavorite ? .pressed : .unpressed
-        let stateOfBucket: StateButton = product.isBucketInside ? .pressed : .unpressed
+        let tableDataSource = ProductDetailDataSource()
         
         let view = ProductDetailViewController(presenter: presenter,
-                                               tableHandler: tableHandler,
-                                               stateOfFavorite: stateOfFavorite,
-                                               stateOfBucket: stateOfBucket
+                                               tableDataSource: tableDataSource
         )
         
-        subject?.add(interactor)
-        interactor.subject = subject
-        interactor.output = interactor
-        interactor.outputToPresenter = presenter
+        interactor.output = presenter
         presenter.view = view
         return view
     }

@@ -10,7 +10,6 @@ protocol ProductListPresenterProtocol: AnyObject {
 final class ProductListPresenter: ProductListPresenterProtocol {
     
     public weak var view: ProductListViewControllerProtocol?
-    public var subject: SubjectInteractorProtocol?
     private let coordinator: ProductListCoordinatorProtocol
     private let interactor: ProductListInteractorInput
     
@@ -23,30 +22,46 @@ final class ProductListPresenter: ProductListPresenterProtocol {
     }
     
     func fetchProducts() {
-        interactor.setupProducts()
+        interactor.fetchProducts()
     }
 }
 
 // MARK: - ProductListInteractorOutput
 
 extension ProductListPresenter: ProductListInteractorOutput {
-    func productFetchingError(title: String) {
-        debugPrint(title)
+    func append(products: [Product]) {
+        view?.append(products: products)
     }
     
-    func products(list: [UUID: Product]) {
-        view?.updateProductListTable(products: list)
+    func reload(products: [Product]) {
+        view?.reload(products: products)
+    }
+    
+    func delete(products: [Product]) {
+        view?.delete(products: products)
+    }
+    
+    func productFetchingError(title: String) {
+        debugPrint(title)
     }
 }
 
 // MARK: - ProductCellDelegate
 
 extension ProductListPresenter: ProductCellDelegate {
-    func showDetail(product: Product) {
-        coordinator.showDetail(product: product, subject: subject)
+    func toggleIsFavorite(product: Product) {
+        product.isFavorite = !product.isFavorite
+        interactor.saveChanges()
+        interactor.fetchProducts()
     }
     
-    func change(product: [UUID: Product]) {
-        interactor.change(product: product)
+    func toggleIsBucketInside(product: Product) {
+        product.isBucketInside = !product.isBucketInside
+        interactor.saveChanges()
+        interactor.fetchProducts()
+    }
+
+    func showDetail(product: Product) {
+        coordinator.showDetail(product: product)
     }
 }
