@@ -111,8 +111,7 @@ public class ProductCell: UITableViewCell {
     
     @objc private func toFavoritesWasClicked() {
         guard
-            let product = product,
-            let id = product.id else {
+            let product = product else {
             return
         }
         let image = !product.isFavorite ?
@@ -125,8 +124,7 @@ public class ProductCell: UITableViewCell {
     
     @objc private func toBucketWasClicked() {
         guard
-            let product = product,
-            let id = product.id else {
+            let product = product else {
             return
         }
         let image = !product.isBucketInside ?

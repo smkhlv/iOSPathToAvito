@@ -8,7 +8,7 @@ public protocol CoreDataAssemblerProtocol {
 }
 
 // Structure responsible for assembling CoreData components
-public struct CoreDataAssembler {
+public struct CoreDataAssembler: CoreDataAssemblerProtocol {
     public var model: NSManagedObjectModel!
     public var context: NSManagedObjectContext?
     public var persistentStoreCoordinator: NSPersistentStoreCoordinator?

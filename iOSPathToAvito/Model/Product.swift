@@ -32,3 +32,15 @@ public class Product: NSManagedObject {
         }
     }
 }
+
+extension Product {
+    func isEqualTo(_ other: Product) -> Bool {
+        return id == other.id &&
+               shopId == other.shopId &&
+               title == other.title &&
+               productDescription == other.productDescription &&
+               price == other.price &&
+               isFavorite == other.isFavorite &&
+               isBucketInside == other.isBucketInside
+    }
+}

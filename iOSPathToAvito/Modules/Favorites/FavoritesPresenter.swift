@@ -50,14 +50,14 @@ extension FavoritesPresenter: ProductCellDelegate {
     
     func toggleIsFavorite(product: Product) {
         product.isFavorite = !product.isFavorite
-        interactor.saveChanges()
-        interactor.fetchProducts()
+        interactor.updateCache(with: product)
+        view?.delete(products: [product])
     }
     
     func toggleIsBucketInside(product: Product) {
         product.isBucketInside = !product.isBucketInside
-        interactor.saveChanges()
-        interactor.fetchProducts()
+        interactor.updateCache(with: product)
+        view?.reload(products: [product])
     }
 
     func showDetail(product: Product) {

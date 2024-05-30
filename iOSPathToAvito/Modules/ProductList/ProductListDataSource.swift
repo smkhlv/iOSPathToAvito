@@ -65,38 +65,6 @@ public final class ProductListDataSource: NSObject {
     }
 }
 
-// MARK: - UITableViewDataSource
-
-//extension ProductListTableHandler: UITableViewDataSource {
-//    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//        return products?.count ?? 0
-//    }
-//    
-//    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//        guard
-//            let product = products?[indexPath.row],
-//            let cell: ProductCell = tableView.dequeueReusableCell(withIdentifier: String(describing: ProductCell.self),
-//                                                              for: indexPath) as? ProductCell else {
-//            return UITableViewCell()
-//        }
-//
-//        let imageOfFavorite = product.isFavorite ?
-//        UIImage(systemName: PublicConstants.SystemImages.heartFill) :
-//        UIImage(systemName: PublicConstants.SystemImages.heart)
-//        
-//        let imageOfBucket = product.isBucketInside ?
-//        UIImage(systemName: PublicConstants.SystemImages.cartFill) :
-//        UIImage(systemName: PublicConstants.SystemImages.cart)
-//        
-//        cell.configureCell(delegate: delegate,
-//                           product: product,
-//                           imageOfFavorite: imageOfFavorite,
-//                           imageOfBucket: imageOfBucket)
-//        
-//        return cell
-//    }
-//}
-
 // MARK: - UITableViewDelegate
 
 extension ProductListDataSource: UITableViewDelegate {

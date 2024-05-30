@@ -57,12 +57,10 @@ extension ProductDetailPresenter: ProductDetailInteractorOutput {
     
     public func outputToggleIsFavorite(product: Product) {
         product.isFavorite = !product.isFavorite
-        interactor.saveChanges()
     }
     
     public func outputToggleIsBucketInside(product: Product) {
         product.isBucketInside = !product.isBucketInside
-        interactor.saveChanges()
     }
     
    

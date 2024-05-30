@@ -17,8 +17,6 @@ final class FavoritesCoordinator: FavoritesCoordinatorProtocol, Coordinator {
     
     var childCoordinators: [Coordinator] = []
     
-    private var repository: RepositoryProtocol?
-    
     var type: CoordinatorType { .favorites }
     
     func start(view: UIViewController? = nil) {
@@ -27,15 +25,12 @@ final class FavoritesCoordinator: FavoritesCoordinatorProtocol, Coordinator {
     }
     
     func showDetail(product: Product) {
-        guard let repository = repository else { return }
         let detail = ModuleFactory.buildProductDetail(product: product,
-                                                      repository: repository)
+                                                      dataService: DependencyContainer.shared.makeProductDataService())
         navigationController.pushViewController(detail, animated: true)
     }
     
-    required init(_ navigationController: UINavigationController,
-                  repository: RepositoryProtocol?) {
-        self.repository = repository
+    required init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
 }

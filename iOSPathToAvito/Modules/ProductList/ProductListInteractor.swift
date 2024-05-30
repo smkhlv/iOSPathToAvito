@@ -7,6 +7,8 @@ protocol ProductListInteractorInput: AnyObject {
     func saveChanges()
     
     func fetchProducts()
+    
+    //func updateCache(with product: Product)
 }
 
 // Protocol defining the output methods for the Product List Interactor
@@ -22,49 +24,95 @@ public protocol ProductListInteractorOutput: AnyObject {
     func delete(products: [Product])
 }
 
-final class ProductListInteractor: ProductListInteractorInput {
+final class ProductListInteractor: ProductListInteractorInput, ProductDifferencable, ProductPredicateGenerator {
     
     public weak var output: ProductListInteractorOutput?
-    private let repository: RepositoryProtocol
+    private var productDataService: ProductDataServiceProtocol
     
-    private var products: [Product] = []
+    private var products = [Product]()
+    
+    init(productDataService: ProductDataServiceProtocol) {
+        self.productDataService = productDataService
+    }
+    
+    private func compareAndUpdate(with products: [Product]) {
 
-    init(repository: RepositoryProtocol) {
-        self.repository = repository
+        if self.products.isEmpty {
+            output?.append(products: products)
+        } else {
+            output?.reload(products: products)
+        }
+        
+        self.products = products
+        productDataService.createProducts(strategy: .fromCache, products: products)
     }
     
-    public func saveChanges() {
-        repository.save()
+    func saveChanges() {
+        guard let product = products.first else {
+            return
+        }
+        productDataService.updateProduct(strategy: .fromBD, product: product)
     }
     
+    private func fetchFromCache() -> Bool {
+        let predicate = generate(dataType: .cache, queryType: .productList)
+        let productsResult = productDataService.fetchProducts(strategy: .fromCache,
+                                                              predicate: predicate)
+        
+        if case let .success(productsFromCashe) = productsResult {
+            if productsFromCashe.isEmpty {
+                return false
+            } else {
+                compareAndUpdate(with: productsFromCashe)
+                return true
+            }
+        }
+        return false
+    }
+    
+    private func fetchFromBD() -> Bool {
+        let predicate = generate(dataType: .bd, queryType: .productList)
+        let productsResult = productDataService.fetchProducts(strategy: .fromBD,
+                                                              predicate: predicate)
+        
+        if case let .success(productsFromCashe) = productsResult {
+            if productsFromCashe.isEmpty {
+                return false
+            } else {
+                compareAndUpdate(with: productsFromCashe)
+                return true
+            }
+        }
+        return false
+    }
+    
+    private func fetchFromJson() -> Bool {
+        let predicate = generate(dataType: .json, queryType: .productList)
+        let productsResult = productDataService.fetchProducts(strategy: .fromJson,
+                                                              predicate: predicate)
+        
+        if case let .success(productsFromCashe) = productsResult {
+            if productsFromCashe.isEmpty {
+                return false
+            } else {
+                compareAndUpdate(with: productsFromCashe)
+                return true
+            }
+        }
+        return false
+    }
+    
+
     func fetchProducts() {
-        switch repository.fetchProducts(predicate: nil, 
-                                        fetchStrategy: .fromBDAndJson) {
-        case .success(let products):
-            if self.products.isEmpty {
-                output?.append(products: products)
-                self.products = products
-                return
-            }
-            if self.products.count != products.count {
-                if self.products.count > products.count {
-                    output?.delete(products: self.products.difference(from: products))
-                } else {
-                    output?.append(products: self.products.difference(from: products))
-                }
-                self.products = products
-                return
-            }
-            if self.products.hasChanges(with: products) {
-                output?.reload(products: products)
-                self.products = products
-                return
-            }
-
-            self.products = products
-        case .failure(let error):
-            output?.productFetchingError(title: error.localizedDescription)
+        
+        if fetchFromCache() {
+            return
+        }
+        if fetchFromBD() {
+            return
+        }
+        if fetchFromJson() {
+            return
         }
     }
 }
-

@@ -2,9 +2,9 @@ import Foundation
 
 // Protocol defining the input methods for Product Detail Interactor
 public protocol ProductDetailInteractorInput {
-
+    
     func fetchProduct()
-
+    
     func getProduct(for action: ProductDetailIActionType)
     
     func saveChanges()
@@ -27,20 +27,24 @@ public enum ProductDetailIActionType {
     case toggleIsFavorite, toggleIsBucketInside, setupButtons
 }
 
-final class ProductDetailInteractor: ProductDetailInteractorInput {
+final class ProductDetailInteractor: ProductDetailInteractorInput, ProductDifferencable, ProductPredicateGenerator {
     
-    private let repository: RepositoryProtocol
+    private let productDataService: ProductDataServiceProtocol
     public weak var output: ProductDetailInteractorOutput?
     
     private var product: Product
     
-    init(repository: RepositoryProtocol, product: Product) {
-        self.repository = repository
+    init(productDataService: ProductDataServiceProtocol, product: Product) {
+        self.productDataService = productDataService
         self.product = product
     }
     
+    public func updateCache(with product: Product) {
+        //productDataService.updateProduct(stategy: .fromCache, product: product)
+    }
+    
     public func saveChanges() {
-        repository.save()
+        productDataService.updateProduct(strategy: .fromBD, product: product)
     }
     
     func getProduct(for action: ProductDetailIActionType) {
@@ -57,18 +61,47 @@ final class ProductDetailInteractor: ProductDetailInteractorInput {
     }
     
     public func fetchProduct() {
-        guard let id = product.id else { return }
-        let predicate = NSPredicate.equalPredicate(key: "id", value: id)
         
-        switch repository.fetchProducts(predicate: predicate,
-                                        fetchStrategy: .fromBD) {
-        case .success(let products):
-            if let product = products.first {
+        let strategy = DataStrategy.fromCache
+        switch strategy {
+        case .fromCache:
+            let predicate = generate(dataType: .cache, queryType: .detail)
+            let productsResult = productDataService.fetchProducts(strategy: .fromCache,
+                                                                  predicate: predicate)
+            
+            if case let .success(productsFromCashe) = productsResult {
+                guard let product = productsFromCashe.first else {
+                    fallthrough
+                }
+                
                 self.product = product
             }
-            output?.reload(product: product)
-        case .failure(let error):
-            output?.productFetchingError(title: error.localizedDescription)
+        case .fromBD:
+            let predicate = generate(dataType: .bd, queryType: .detail)
+            let productsResult = productDataService.fetchProducts(strategy: .fromBD,
+                                                                  predicate: predicate)
+            
+            if case let .success(productsFromBD) = productsResult {
+                guard let product = productsFromBD.first else {
+                    fallthrough
+                }
+                
+                self.product = product
+            }
+            
+        case .fromJson:
+            let predicate = generate(dataType: .json, queryType: .detail)
+            let productsResult = productDataService.fetchProducts(strategy: .fromJson,
+                                                                  predicate: predicate)
+            
+            if case let .success(productsFromLocalFile) = productsResult {
+                guard let product = productsFromLocalFile.first else {
+                    return
+                }
+                
+                self.product = product
+            }
         }
+        output?.reload(product: product)
     }
 }

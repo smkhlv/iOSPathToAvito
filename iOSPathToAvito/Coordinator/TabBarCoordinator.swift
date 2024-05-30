@@ -24,25 +24,19 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
     var navigationController: UINavigationController
     
     var tabBarController: UITabBarController
-    
-    private var repository: RepositoryProtocol?
-    
+
     var type: CoordinatorType { .tab }
     
-    required init(_ navigationController: UINavigationController,
-                  repository: RepositoryProtocol?) {
-        self.repository = repository
+    required init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
         self.tabBarController = .init()
     }
     
     func start(view: UIViewController? = nil) {
-        guard let repository = repository else { return }
         let pages: [TabBarPage] = [.productList, .favorites, .bucketList]
         
         
-        let controllers: [UINavigationController] = pages.map({ getTabController($0,
-                                                                                 repository: repository)
+        let controllers: [UINavigationController] = pages.map({ getTabController($0)
         })
         
         prepareTabBarController(withTabControllers: controllers)
@@ -62,8 +56,7 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
         navigationController.viewControllers = [tabBarController]
     }
     
-    private func getTabController(_ page: TabBarPage,
-                                  repository: RepositoryProtocol) -> UINavigationController {
+    private func getTabController(_ page: TabBarPage) -> UINavigationController {
         let navController = UINavigationController()
         navController.setNavigationBarHidden(false, animated: false)
         
@@ -74,27 +67,24 @@ final class TabCoordinator: NSObject, Coordinator, TabCoordinatorProtocol {
         
         switch page {
         case .productList:
-            let productListCoordinator = ProductListCoordinator(navController,
-                                                                repository: repository)
-            let build = ModuleFactory.buildProductList(coordinator: productListCoordinator,
-                                                       repository: repository)
+            let productListCoordinator = ProductListCoordinator(navController)
+            let build = ModuleFactory.buildProductList(coordinator: productListCoordinator, 
+                                                       dataService: DependencyContainer.shared.makeProductDataService())
             
             productListCoordinator.finishDelegate = self
             productListCoordinator.start(view: build)
             childCoordinators.append(productListCoordinator)
         case .bucketList:
-            let bucketListCoordinator = BucketListCoordinator(navController,
-                                                              repository: repository)
-            let build = ModuleFactory.buildBucketList(coordinator: bucketListCoordinator,
-                                                      repository: repository)
+            let bucketListCoordinator = BucketListCoordinator(navController)
+            let build = ModuleFactory.buildBucketList(coordinator: bucketListCoordinator, 
+                                                      dataService: DependencyContainer.shared.makeProductDataService())
             bucketListCoordinator.finishDelegate = self
             bucketListCoordinator.start(view: build)
             childCoordinators.append(bucketListCoordinator)
         case .favorites:
-            let favoritesCoordinator = FavoritesCoordinator(navController, 
-                                                            repository: repository)
+            let favoritesCoordinator = FavoritesCoordinator(navController)
             let build = ModuleFactory.buildFavorites(coordinator: favoritesCoordinator,
-                                                     repository: repository)
+                                                     dataService: DependencyContainer.shared.makeProductDataService())
             favoritesCoordinator.finishDelegate = self
             favoritesCoordinator.start(view: build)
             childCoordinators.append(favoritesCoordinator)

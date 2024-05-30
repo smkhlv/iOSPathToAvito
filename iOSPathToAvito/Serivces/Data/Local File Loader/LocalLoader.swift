@@ -1,7 +1,7 @@
 import Foundation
 
 // Protocol defining methods for loading shop and product data
-public protocol LoaderProtocol {
+public protocol LocalLoaderProtocol {
     
     // Method to fetch shop data
     func fetchShops() -> Result<[ShopDTO], Error>
@@ -16,7 +16,7 @@ public enum LoaderError: Error {
     case readFromFileError
 }
 
-public class Loader: JSONReadable, LoaderProtocol {
+public struct LocalLoader: JSONReadable, LocalLoaderProtocol {
     
     public func fetchShops() -> Result<[ShopDTO], Error> {
         do {

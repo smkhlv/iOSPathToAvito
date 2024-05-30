@@ -15,9 +15,7 @@ final class ProductListCoordinator: ProductListCoordinatorProtocol, Coordinator 
     var navigationController: UINavigationController
     
     var childCoordinators: [Coordinator] = []
-    
-    private var repository: RepositoryProtocol?
-    
+
     var type: CoordinatorType { .productList }
     
     func start(view: UIViewController? = nil) {
@@ -26,15 +24,12 @@ final class ProductListCoordinator: ProductListCoordinatorProtocol, Coordinator 
     }
     
     func showDetail(product: Product) {
-        guard let repository = repository else { return }
         let detail = ModuleFactory.buildProductDetail(product: product,
-                                                      repository: repository)
+                                                      dataService: DependencyContainer.shared.makeProductDataService())
         navigationController.pushViewController(detail, animated: true)
     }
     
-    required init(_ navigationController: UINavigationController,
-                  repository: RepositoryProtocol?) {
-        self.repository = repository
+    required init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
 }

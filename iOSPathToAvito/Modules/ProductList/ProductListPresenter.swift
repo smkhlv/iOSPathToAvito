@@ -51,14 +51,10 @@ extension ProductListPresenter: ProductListInteractorOutput {
 extension ProductListPresenter: ProductCellDelegate {
     func toggleIsFavorite(product: Product) {
         product.isFavorite = !product.isFavorite
-        interactor.saveChanges()
-        interactor.fetchProducts()
     }
     
     func toggleIsBucketInside(product: Product) {
         product.isBucketInside = !product.isBucketInside
-        interactor.saveChanges()
-        interactor.fetchProducts()
     }
 
     func showDetail(product: Product) {

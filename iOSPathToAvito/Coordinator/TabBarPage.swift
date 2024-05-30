@@ -1,7 +1,7 @@
 import UIKit
 
 // Enum representing the different pages of the tab bar
-enum TabBarPage {
+public enum TabBarPage {
     case bucketList, productList, favorites
     
     // Initialize TabBarPage based on index

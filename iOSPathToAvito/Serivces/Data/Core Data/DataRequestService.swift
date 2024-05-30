@@ -1,7 +1,7 @@
 import CoreData
 
 // Protocol defining methods for interacting with data services
-public protocol DataServiceProtocol {
+public protocol CoreDataServiceProtocol {
     // Method to save changes to the data context
     func save()
     
@@ -12,11 +12,11 @@ public protocol DataServiceProtocol {
     func fetch<T: NSManagedObject>(_ type: T.Type, predicate: NSPredicate?) -> [T]
 }
 
-public class DataRequestService: DataServiceProtocol {
+public class DataRequestService: CoreDataServiceProtocol {
     
-    let coreDataAssembler: CoreDataAssembler
+    let coreDataAssembler: CoreDataAssemblerProtocol
     
-    init(coreDataAssembler: CoreDataAssembler) {
+    init(coreDataAssembler: CoreDataAssemblerProtocol) {
         self.coreDataAssembler = coreDataAssembler
     }
     

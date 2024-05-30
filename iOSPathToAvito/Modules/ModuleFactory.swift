@@ -6,10 +6,10 @@ struct ModuleFactory {
     // Builds the Bucket List module
     static func buildBucketList(
         coordinator: BucketListCoordinatorProtocol,
-        repository: RepositoryProtocol
+        dataService: ProductDataServiceProtocol
     ) -> UIViewController {
         
-        let interactor = BucketListInteractor(repository: repository)
+        let interactor = BucketListInteractor(productDataService: dataService)
         let presenter = BucketListPresenter(coordinator: coordinator, interactor: interactor)
         let tableDataSource = ProductListDataSource()
         let view = BucketListViewController(presenter: presenter,
@@ -24,10 +24,10 @@ struct ModuleFactory {
     // Builds the Product List module
     static func buildProductList(
         coordinator: ProductListCoordinatorProtocol,
-        repository: RepositoryProtocol
+        dataService: ProductDataServiceProtocol
     ) -> UIViewController {
         
-        let interactor = ProductListInteractor(repository: repository)
+        let interactor = ProductListInteractor(productDataService: dataService)
         let presenter = ProductListPresenter(coordinator: coordinator, interactor: interactor)
         let tableDataSource = ProductListDataSource()
         let view = ProductListViewController(presenter: presenter, tableDataSource: tableDataSource)
@@ -41,10 +41,10 @@ struct ModuleFactory {
     // Builds the Favorites module
     static func buildFavorites(
         coordinator: FavoritesCoordinatorProtocol,
-        repository: RepositoryProtocol
+        dataService: ProductDataServiceProtocol
     ) -> UIViewController {
         
-        let interactor = FavoritesInteractor(repository: repository)
+        let interactor = FavoritesInteractor(productDataService: dataService)
         let presenter = FavoritesPresenter(coordinator: coordinator, interactor: interactor)
         let tableDataSource = ProductListDataSource()
         let view = FavoritesViewController(presenter: presenter, tableDataSource: tableDataSource)
@@ -58,10 +58,10 @@ struct ModuleFactory {
     // Builds the Product Detail module
     static func buildProductDetail(
         product: Product,
-        repository: RepositoryProtocol
+        dataService: ProductDataServiceProtocol
     ) -> UIViewController {
         
-        let interactor = ProductDetailInteractor(repository: repository,
+        let interactor = ProductDetailInteractor(productDataService: dataService,
                                                  product: product)
         let presenter = ProductDetailPresenter(interactor: interactor)
         let tableDataSource = ProductDetailDataSource()

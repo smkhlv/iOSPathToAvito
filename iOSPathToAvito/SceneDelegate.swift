@@ -14,12 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
         
-        let loader: LoaderProtocol = Loader()
-        let dataManager: DataServiceProtocol = DataRequestService(coreDataAssembler: CoreDataAssembler())
-        let repository: RepositoryProtocol = Repository(loader: loader,
-                                                        dataRequestService: dataManager)
-        
-        appCoordinator = AppCoordinator.init(navigationController, repository: repository)
+        appCoordinator = AppCoordinator.init(navigationController)
         appCoordinator?.start()
     }
 }

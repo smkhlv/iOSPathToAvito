@@ -16,8 +16,6 @@ final class BucketListCoordinator: BucketListCoordinatorProtocol, Coordinator {
     
     var childCoordinators: [Coordinator] = []
     
-    private var repository: RepositoryProtocol?
-    
     var type: CoordinatorType { .bucket }
     
     func start(view: UIViewController? = nil) {
@@ -26,15 +24,12 @@ final class BucketListCoordinator: BucketListCoordinatorProtocol, Coordinator {
     }
     
     func showDetail(product: Product) {
-        guard let repository = repository else { return }
         let detail = ModuleFactory.buildProductDetail(product: product,
-                                                      repository: repository)
+                                                      dataService: DependencyContainer.shared.makeProductDataService())
         navigationController.pushViewController(detail, animated: true)
     }
     
-    required init(_ navigationController: UINavigationController,
-                  repository: RepositoryProtocol?) {
-        self.repository = repository
+    required init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
 }

@@ -25,8 +25,7 @@ protocol Coordinator: AnyObject {
     // Method to finish the flow and clean up resources
     func finish()
     
-    init(_ navigationController: UINavigationController,
-                  repository: RepositoryProtocol?)
+    init(_ navigationController: UINavigationController)
 }
 
 extension Coordinator {

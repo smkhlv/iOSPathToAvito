@@ -12,14 +12,10 @@ class AppCoordinator: AppCoordinatorProtocol {
     var navigationController: UINavigationController
     
     var childCoordinators = [Coordinator]()
-    
-    private var repository: RepositoryProtocol?
-    
+
     var type: CoordinatorType { .app }
         
-    required init(_ navigationController: UINavigationController,
-                  repository: RepositoryProtocol?) {
-        self.repository = repository
+    required init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
     }
 
@@ -28,8 +24,7 @@ class AppCoordinator: AppCoordinatorProtocol {
     }
 
     func showMainFlow() {
-        let tabCoordinator = TabCoordinator.init(navigationController,
-                                                 repository: repository)
+        let tabCoordinator = TabCoordinator.init(navigationController)
         tabCoordinator.finishDelegate = self
         tabCoordinator.start()
         childCoordinators.append(tabCoordinator)
